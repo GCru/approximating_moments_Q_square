@@ -215,6 +215,20 @@ def examine_standardized_fund_return(V):
 	
 if __name__ == '__main__':
 	
+	n=1000
+	I = numpy.zeros((n, n))
+	numpy.fill_diagonal(I, 1)
+	
+	sum_list =[]
+	for count in range(100):
+		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), 1 * I)
+		print(numpy.sum(w))
+		sum_list.append(numpy.sum(w))
+	print()
+	print(numpy.mean(sum_list))
+		
+	exit()
+	
 	# examine how random funds weights work
 	#see_how_random_fund_weights_work(1000)
 	#exit()
@@ -234,11 +248,11 @@ if __name__ == '__main__':
 	
 	wVw= []
 	fund_sigma_if_zero_sum = []
-	for count in range(10000):
+	for count in range(100):
 		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1/n) * I)
-		#print(numpy.sum(w))
+		print(numpy.sum(w))
 		w = w - numpy.sum(w)/n
-		#print(numpy.sum(w))
+		print(numpy.sum(w))
 		
 		wVw.append(numpy.dot(w, numpy.dot(V, w)))
 		
