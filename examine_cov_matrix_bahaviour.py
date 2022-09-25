@@ -114,12 +114,32 @@ def calculate_variance_spread_from_V(V, sigma, rho):
 
 
 def see_how_random_fund_weights_work(n):
+	"""
 	
-	w_list = numpy.random.default_rng().normal(0, (1/n)**0.5,size=n)
+	:param n: Number of active positons
+	:return:
+	"""
 	
-	print(w_list)
+	n = n
 	
-	print(numpy.std(w_list), (1/n)**0.5)
+	stdev = 0.1
+	I = numpy.zeros((n, n))
+	numpy.fill_diagonal(I, 1)
+	
+	sum_list = []
+	for count in range(100):
+		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (stdev ** 2) / n * I)
+		
+		A_euclid = numpy.dot(w, w) ** 0.5
+		adjust_w = w + (0 - numpy.sum(w)) / n
+		A_euclid_adjust = numpy.dot(adjust_w, adjust_w) ** 0.5
+		
+		print(' The holdings add to', numpy.sum(w), 'with Euclidean active share', A_euclid,
+			  'The adjusted holdings should add to zero', numpy.sum(adjust_w), ' with Euclidean active share',
+			  A_euclid_adjust)
+		
+		print('EUclidean share difference', A_euclid - A_euclid_adjust)
+		sum_list.append(numpy.sum(w))
 
 	
 	return
@@ -215,23 +235,10 @@ def examine_standardized_fund_return(V):
 	
 if __name__ == '__main__':
 	
-	n=1000
-	I = numpy.zeros((n, n))
-	numpy.fill_diagonal(I, 1)
-	
-	sum_list =[]
-	for count in range(100):
-		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), 1 * I)
-		print(numpy.sum(w))
-		sum_list.append(numpy.sum(w))
-	print()
-	print(numpy.mean(sum_list))
-		
-	exit()
-	
 	# examine how random funds weights work
-	#see_how_random_fund_weights_work(1000)
+	#see_how_random_fund_weights_work(100)
 	#exit()
+	
 	
 	# check if funds drawn from standard random normal gives normal return distributions, e.g. affine transformation
 	#calculate_distribution_of_random_funds_returns()
@@ -247,20 +254,32 @@ if __name__ == '__main__':
 	numpy.fill_diagonal(I,1)
 	
 	wVw= []
+	adjusted_wVw= []
 	fund_sigma_if_zero_sum = []
-	for count in range(100):
-		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1/n) * I)
-		print(numpy.sum(w))
-		w = w - numpy.sum(w)/n
-		print(numpy.sum(w))
+	for count in range(1000):
+		
+		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), ((sigma**2)/n) * I)
 		
 		wVw.append(numpy.dot(w, numpy.dot(V, w)))
 		
-		A_euclid = numpy.dot(w, w) ** 0.5
-		fund_sigma_if_zero_sum.append((A_euclid * sigma * (1-rho)**0.5)**2)
+		adjusted_w = w +(0- numpy.sum(w)/n)
+		adjusted_wVw.append(numpy.dot(adjusted_w, numpy.dot(V, adjusted_w)))
+		
+		#print(numpy.sum(w), wVw[-1], numpy.sum(adjusted_w), adjusted_wVw[-1])
 	
-	print(numpy.mean(wVw), numpy.trace(V)/n, numpy.mean(fund_sigma_if_zero_sum))
+		
+		adjusted_A_euclid = numpy.dot(adjusted_w, adjusted_w) ** 0.5
+		fund_sigma_if_zero_sum.append((adjusted_A_euclid * sigma * (1-rho)**0.5)**2)
+	
+	print('Mean of fund equity portion sigma', numpy.mean(wVw), 'Theoretical mean', numpy.trace(V)/n)
+	
+	print('Mean when weights are adjusted', numpy.mean(adjusted_wVw), 'Theoretical mean',  numpy.mean(fund_sigma_if_zero_sum) )
+	
+	exit()
+	
 	print((numpy.std(wVw))**2, 2*numpy.linalg.norm(V)**2/(n*n), numpy.std(fund_sigma_if_zero_sum)**2)
+	
+	print(numpy.mean(adjust_wVw), numpy.std(adjust_wVw)**2)
 	
 	#print(numpy.mean(w), numpy.std(w), (1/n)**0.5)
 	
