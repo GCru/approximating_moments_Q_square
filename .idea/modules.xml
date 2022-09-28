@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/estimate_tracking_error.iml" filepath="$PROJECT_DIR$/.idea/estimate_tracking_error.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fundskill/.idea/fundskill.iml" filepath="$PROJECT_DIR$/../fundskill/.idea/fundskill.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../shared_script_for_papers/.idea/shared_script_for_papers.iml" filepath="$PROJECT_DIR$/../shared_script_for_papers/.idea/shared_script_for_papers.iml" />
     </modules>
   </component>
 </project>
