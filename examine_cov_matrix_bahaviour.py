@@ -34,7 +34,8 @@ def create_covariance_matrix(sigma, rho, n):
 		V[idx, idx] = sigma * sigma
 	
 	w, v = numpy.linalg.eig(V)
-	print('Max eigenvalue:', max(w))
+	print('Max eigenvalue:', max(w), ' Min eigenvalue', min(w))
+	#print(w)
 	# print(w)
 	
 	return V
@@ -246,21 +247,24 @@ if __name__ == '__main__':
 	
 	# Set up covariance matrix of size n
 	n = 100
-	rho = 0.2
-	sigma = 1.0
+	rho = 0.4
+	sigma = 0.03
 	V = create_covariance_matrix(sigma, rho, n)
+	#V[1,1] =0.4
 	
 	I = numpy.zeros((n,n))
 	numpy.fill_diagonal(I,1)
 	
-	wVw= []
+	wVw = []
+	wVw_sqr = []
 	adjusted_wVw= []
 	fund_sigma_if_zero_sum = []
 	for count in range(1000):
 		
-		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), ((sigma**2)/n) * I)
+		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1/n) * I)
 		
 		wVw.append(numpy.dot(w, numpy.dot(V, w)))
+		wVw_sqr.append(wVw[-1]**0.5)
 		
 		adjusted_w = w +(0- numpy.sum(w)/n)
 		adjusted_wVw.append(numpy.dot(adjusted_w, numpy.dot(V, adjusted_w)))
@@ -271,9 +275,39 @@ if __name__ == '__main__':
 		adjusted_A_euclid = numpy.dot(adjusted_w, adjusted_w) ** 0.5
 		fund_sigma_if_zero_sum.append((adjusted_A_euclid * sigma * (1-rho)**0.5)**2)
 	
-	print('Mean of fund equity portion sigma', numpy.mean(wVw), 'Theoretical mean', numpy.trace(V)/n)
+	print('Mean of tracking error variance. Actual ', numpy.mean(wVw), 'Theoretical', numpy.trace(V)/n)
 	
 	print('Mean when weights are adjusted', numpy.mean(adjusted_wVw), 'Theoretical mean',  numpy.mean(fund_sigma_if_zero_sum) )
+	
+	print('Variance of tracking error variance. Actual:', numpy.var(wVw), 'Theoretical', 2*((rho**2)*(n-1)*n + (sigma**2)*n)/(n*n), 2*numpy.average(numpy.square(V)))
+	
+	print('Support,', min(wVw), max(wVw), 2*numpy.trace(V)/n )
+	
+	print('Mean of tracking error. Actual: ', numpy.mean(wVw_sqr), 'Theoretical:', (numpy.trace(V) / n)**0.5)
+	print('Variance of tracking error. Actual:', numpy.var(wVw_sqr))\
+	
+	print('Check by calculating tracking error variance from formula', numpy.mean(wVw_sqr)**2+ numpy.var(wVw_sqr) )
+	
+	print('Taylor',(numpy.trace(V)/n)**0.5 - (1.0/8.0)*(numpy.trace(V)/n)**(-1.5)*2*numpy.average(numpy.square(V)))
+	
+	
+	#draw histogram of vWv
+	from make_histogram_procedure import make_histogram
+	
+	frequency_list, bin_edges_list = make_histogram(wVw_sqr)
+	
+	left_edges = bin_edges_list[:-1]
+	right_edges = bin_edges_list[1:]
+	data = {'frequency': frequency_list, 'left_edges': left_edges, 'right_edges': right_edges}
+	source = ColumnDataSource(data=data)
+	
+	# Set up plot
+	plot0 = figure(plot_width=int(500), plot_height=500)
+	r0 = plot0.quad(
+		bottom=0, top='frequency', left='left_edges', right='right_edges', source=source,
+		fill_color='lightgrey', line_color='black')  # legend='Underperforming monkey portfolios')
+	
+	show(plot0)
 	
 	exit()
 	

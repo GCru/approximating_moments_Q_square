@@ -21,7 +21,7 @@ if __name__ == '__main__':
 	benchmark_list = ['S&P 500 TR USD']
 	
 	for benchmark_name in benchmark_list:
-		results_file_name = 'random_all_10000_funds_risk_distribution_' + benchmark_name + '.csv'
+		results_file_name = 'random_all_10000_funds_risk_distribution_linear_shrink' + benchmark_name + '.csv'
 		
 		calculate_small_random_fund_results_and_write_to_file(
-			benchmark_name, date_range, results_file_name, number_of_months=60, number_of_stocks=50, calc_method=['clipped'])
+			benchmark_name, date_range, results_file_name, number_of_months=60, number_of_stocks="All", calc_method=['linear_shrink'])
