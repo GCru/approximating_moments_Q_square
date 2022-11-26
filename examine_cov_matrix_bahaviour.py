@@ -251,7 +251,7 @@ if __name__ == '__main__':
 	
 	# Set up covariance matrix of size n
 	n = 100
-	rho = 0.3
+	rho = 0.4
 	sigma = 1.0
 	V = create_covariance_matrix(sigma, rho, n)
 	#V[1,1] =0.4
