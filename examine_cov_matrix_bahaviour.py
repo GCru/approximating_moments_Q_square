@@ -6,6 +6,10 @@ from scipy.stats import kstest, kurtosis, skew, skewtest, jarque_bera, wasserste
 from scipy.special import erf
 from scipy import optimize
 
+from momentchi2 import hbe
+
+
+
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import Range1d, PrintfTickFormatter, NumeralTickFormatter, Title
 from bokeh.layouts import row
@@ -247,10 +251,13 @@ if __name__ == '__main__':
 	
 	# Set up covariance matrix of size n
 	n = 100
-	rho = 0.4
-	sigma = 0.03
+	rho = 0.3
+	sigma = 1.0
 	V = create_covariance_matrix(sigma, rho, n)
 	#V[1,1] =0.4
+	
+	
+	
 	
 	I = numpy.zeros((n,n))
 	numpy.fill_diagonal(I,1)
@@ -259,7 +266,7 @@ if __name__ == '__main__':
 	wVw_sqr = []
 	adjusted_wVw= []
 	fund_sigma_if_zero_sum = []
-	for count in range(1000):
+	for count in range(10000):
 		
 		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1/n) * I)
 		
@@ -288,9 +295,19 @@ if __name__ == '__main__':
 	
 	print('Check by calculating tracking error variance from formula', numpy.mean(wVw_sqr)**2+ numpy.var(wVw_sqr) )
 	
-	print('Taylor',(numpy.trace(V)/n)**0.5 - (1.0/8.0)*(numpy.trace(V)/n)**(-1.5)*2*numpy.average(numpy.square(V)))
+	taylor=(numpy.trace(V)/n)**0.5 - (1.0/8.0)*(numpy.trace(V)/n)**(-1.5)*2*numpy.average(numpy.square(V))
+	print('Taylor',taylor)
+	print('Percentage error', 100*(taylor-numpy.mean(wVw_sqr))/numpy.mean(wVw_sqr),'%')
 	
+	# should give value close to 0.95, actually 0.94908
+	w, v = numpy.linalg.eig(V)
+	#print(sum(w)/n,2*numpy.trace(V)/n)
+	#print(w)
+	w=[i.real for i in w]
+	x = hbe(coeff=w, x=2*sum(w))
+	print('cut off point of distribution',x)
 	
+	exit()
 	#draw histogram of vWv
 	from make_histogram_procedure import make_histogram
 	

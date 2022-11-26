@@ -45,6 +45,7 @@ def create_factor_matrix():
 	
 
 if __name__ == '__main__':
+	#  see https://stackoverflow.com/questions/11479064/multiple-linear-regression-in-python
 	
 	R=create_return_matrix()
 	
