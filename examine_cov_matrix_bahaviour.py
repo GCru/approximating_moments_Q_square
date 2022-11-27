@@ -275,7 +275,7 @@ if __name__ == '__main__':
 	
 	# Set up covariance matrix of size n
 	n = 100
-	rho = 0.999
+	rho = 0.4
 	sigma = 1.0
 	V = create_covariance_matrix(sigma, rho, n)
 	#V[1,1] =0.4
@@ -305,6 +305,7 @@ if __name__ == '__main__':
 		adjusted_A_euclid = numpy.dot(adjusted_w, adjusted_w) ** 0.5
 		fund_sigma_if_zero_sum.append((adjusted_A_euclid * sigma * (1-rho)**0.5)**2)
 	
+	print()
 	print('Mean of tracking error variance. Actual ', numpy.mean(wVw), 'Theoretical', numpy.trace(V)/n)
 	
 	#print('Mean when weights are adjusted', numpy.mean(adjusted_wVw), 'Theoretical mean',  numpy.mean(fund_sigma_if_zero_sum) )
