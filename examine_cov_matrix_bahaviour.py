@@ -286,7 +286,7 @@ if __name__ == '__main__':
 	numpy.fill_diagonal(I,1)
 	
 	wVw = []
-	wVw_sqr = []
+	wVw_sqrt = []
 	adjusted_wVw= []
 	fund_sigma_if_zero_sum = []
 	for count in range(1000):
@@ -294,7 +294,7 @@ if __name__ == '__main__':
 		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1/n) * I)
 		
 		wVw.append(numpy.dot(w, numpy.dot(V, w)))
-		wVw_sqr.append(wVw[-1]**0.5)
+		wVw_sqrt.append(wVw[-1]**0.5)
 		
 		adjusted_w = w +(0- numpy.sum(w)/n)
 		adjusted_wVw.append(numpy.dot(adjusted_w, numpy.dot(V, adjusted_w)))
@@ -313,14 +313,14 @@ if __name__ == '__main__':
 	print('Variance of tracking error variance. Actual:', numpy.var(wVw), 'Theoretical', 2*((rho**2)*(n-1)*n + (sigma**2)*n)/(n*n), 'or', 2*numpy.average(numpy.square(V)))
 	
 	print()
-	print('Expected value (mean) of tracking error. Actual: ', numpy.mean(wVw_sqr), 'Theoretical upper bound:', (numpy.trace(V) / n)**0.5)
+	print('Expected value (mean) of tracking error. Actual: ', numpy.mean(wVw_sqrt), 'Theoretical upper bound:', (numpy.trace(V) / n)**0.5)
 
-	# print('Check by calculating mean tracking error variance from formula', numpy.mean(wVw_sqr)**2+ numpy.var(wVw_sqr) )
+	# print('Check by calculating mean tracking error variance from formula', numpy.mean(wVw_sqrt)**2+ numpy.var(wVw_sqrt) )
 	
 	taylor=(numpy.trace(V)/n)**0.5 - (1.0/8.0)*(numpy.trace(V)/n)**(-1.5)*2*numpy.average(numpy.square(V))
 	print('Expected value (mean) of tracking error. Taylor: ', taylor)
-	print('Percentage error taylor', 100*(taylor-numpy.mean(wVw_sqr))/numpy.mean(wVw_sqr),'%',
-		  'Percentage error upper bound',100*((numpy.trace(V)/n)**0.5-numpy.mean(wVw_sqr))/numpy.mean(wVw_sqr), '%')
+	print('Percentage error taylor', 100*(taylor-numpy.mean(wVw_sqrt))/numpy.mean(wVw_sqrt),'%',
+		  'Percentage error upper bound',100*((numpy.trace(V)/n)**0.5-numpy.mean(wVw_sqrt))/numpy.mean(wVw_sqrt), '%')
 	
 	print()
 	print('Numerical support,', min(wVw), 'to', max(wVw), 'Valid support for Taylor series', 2*numpy.trace(V)/n )
@@ -333,14 +333,16 @@ if __name__ == '__main__':
 	print('Probability that wVw >', 2*sum(w),' for wVw distribution', x)
 	
 	print()
-	print('Variance of tracking error: Estimated from Taylor', numpy.trace(V)/n-taylor**2)
-	print('Variance of tracking error: Actual:', numpy.var(wVw_sqr))
+	print('Variance of tracking error: Estimated from Taylor', numpy.trace(V)/n-taylor**2, 'and stdev', (numpy.trace(V)/n-taylor**2)**0.5)
+	print('Variance of tracking error: Actual:', numpy.var(wVw_sqrt), 'and stdev', numpy.var(wVw_sqrt)**0.5 )
+	
+	print('Check actual variance of tracking error from formula:',  numpy.mean(wVw) - numpy.mean(wVw_sqrt)**2)
  
 	exit()
 	#draw histogram of vWv
 	from make_histogram_procedure import make_histogram
 	
-	frequency_list, bin_edges_list = make_histogram(wVw_sqr)
+	frequency_list, bin_edges_list = make_histogram(wVw_sqrt)
 	
 	left_edges = bin_edges_list[:-1]
 	right_edges = bin_edges_list[1:]
