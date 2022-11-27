@@ -275,7 +275,7 @@ if __name__ == '__main__':
 	
 	# Set up covariance matrix of size n
 	n = 100
-	rho = 0.0
+	rho = 0.999
 	sigma = 1.0
 	V = create_covariance_matrix(sigma, rho, n)
 	#V[1,1] =0.4
@@ -307,29 +307,34 @@ if __name__ == '__main__':
 	
 	print('Mean of tracking error variance. Actual ', numpy.mean(wVw), 'Theoretical', numpy.trace(V)/n)
 	
-	print('Mean when weights are adjusted', numpy.mean(adjusted_wVw), 'Theoretical mean',  numpy.mean(fund_sigma_if_zero_sum) )
+	#print('Mean when weights are adjusted', numpy.mean(adjusted_wVw), 'Theoretical mean',  numpy.mean(fund_sigma_if_zero_sum) )
 	
-	print('Variance of tracking error variance. Actual:', numpy.var(wVw), 'Theoretical', 2*((rho**2)*(n-1)*n + (sigma**2)*n)/(n*n), 2*numpy.average(numpy.square(V)))
+	print('Variance of tracking error variance. Actual:', numpy.var(wVw), 'Theoretical', 2*((rho**2)*(n-1)*n + (sigma**2)*n)/(n*n), 'or', 2*numpy.average(numpy.square(V)))
 	
-	print('Support,', min(wVw), max(wVw), 2*numpy.trace(V)/n )
-	
-	print('Mean of tracking error. Actual: ', numpy.mean(wVw_sqr), 'Theoretical:', (numpy.trace(V) / n)**0.5)
-	print('Variance of tracking error. Actual:', numpy.var(wVw_sqr))\
-	
-	print('Check by calculating tracking error variance from formula', numpy.mean(wVw_sqr)**2+ numpy.var(wVw_sqr) )
+	print()
+	print('Expected value (mean) of tracking error. Actual: ', numpy.mean(wVw_sqr), 'Theoretical upper bound:', (numpy.trace(V) / n)**0.5)
+
+	# print('Check by calculating mean tracking error variance from formula', numpy.mean(wVw_sqr)**2+ numpy.var(wVw_sqr) )
 	
 	taylor=(numpy.trace(V)/n)**0.5 - (1.0/8.0)*(numpy.trace(V)/n)**(-1.5)*2*numpy.average(numpy.square(V))
-	print('Taylor',taylor)
-	print('Percentage error', 100*(taylor-numpy.mean(wVw_sqr))/numpy.mean(wVw_sqr),'%')
+	print('Expected value (mean) of tracking error. Taylor: ', taylor)
+	print('Percentage error taylor', 100*(taylor-numpy.mean(wVw_sqr))/numpy.mean(wVw_sqr),'%',
+		  'Percentage error upper bound',100*((numpy.trace(V)/n)**0.5-numpy.mean(wVw_sqr))/numpy.mean(wVw_sqr), '%')
 	
-	# should give value close to 0.95, actually 0.94908
+	print()
+	print('Numerical support,', min(wVw), 'to', max(wVw), 'Valid support for Taylor series', 2*numpy.trace(V)/n )
+	
 	w, v = numpy.linalg.eig(V)
 	#print(sum(w)/n,2*numpy.trace(V)/n)
 	#print(w)
-	w=[i.real for i in w]
+	w=[i.real/n for i in w]
 	x = hbe(coeff=w, x=2*sum(w))
-	print('cut off point of distribution',x)
+	print('Probability that wVw >', 2*sum(w),' for wVw distribution', x)
 	
+	print()
+	print('Variance of tracking error: Estimated from Taylor', numpy.trace(V)/n-taylor**2)
+	print('Variance of tracking error: Actual:', numpy.var(wVw_sqr))
+ 
 	exit()
 	#draw histogram of vWv
 	from make_histogram_procedure import make_histogram
