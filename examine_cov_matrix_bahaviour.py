@@ -44,6 +44,24 @@ def create_covariance_matrix(sigma, rho, n):
 	
 	return V
 
+def test_Marcenko_Pastur_covariance_matrix(sigma,n,T):
+	"""
+	:param sigma: standard deviation
+	:param n: number of assets
+	:param T: number of time intervals
+	:return:
+	"""
+	
+	R = numpy.random.default_rng().normal(loc=0, scale = sigma, size=(n,T))
+	V = numpy.matmul(R, numpy.transpose(R))/T
+	
+	w, v = numpy.linalg.eig(V)
+	print('Max eigenvalue:', max(w), ' Min eigenvalue', min(w))
+	print('Theoretical max eigenvalue', (1 + (n / T) ** 0.5) ** 2)
+	
+	return V
+	
+	
 
 def calculate_active_returns(V, z):
 	# Caluclate minimum posibble bencmark return
@@ -246,6 +264,14 @@ if __name__ == '__main__':
 	# check if funds drawn from standard random normal gives normal return distributions, e.g. affine transformation
 	#calculate_distribution_of_random_funds_returns()
 	#exit()
+	
+	# check how marcenko pastur works
+	#sigma =1
+	#n=1000
+	#T=1000
+	#V= test_Marcenko_Pastur_covariance_matrix(sigma, n, T)
+	#exit()
+	
 	
 	# Set up covariance matrix of size n
 	n = 100
