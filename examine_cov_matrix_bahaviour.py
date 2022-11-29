@@ -253,6 +253,44 @@ def examine_standardized_fund_return(V):
 	#standard_fund_variance_list
 	return
 
+
+def draw_sum_of_chi_cdf(w):
+	
+	
+	
+	grain=100
+	
+	
+	plot0 = figure(plot_width=int(500), plot_height=500)
+	
+	n = 100
+	rho = 0.99
+	sigma = 1.0
+	V = create_covariance_matrix(sigma, rho, n)
+	w, v = numpy.linalg.eig(V)
+	
+	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
+	
+	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
+	plot0.line(x_axis,y_axis, line_width=2)
+	
+	rho = 0.3
+	V = create_covariance_matrix(sigma, rho, n)
+	w, v = numpy.linalg.eig(V)
+	
+	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
+	
+	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
+	plot0.line(x_axis, y_axis, line_width=2)
+	
+	show(plot0)
+	
+	return
+
+
+
+
+
 	
 if __name__ == '__main__':
 	
@@ -275,7 +313,7 @@ if __name__ == '__main__':
 	
 	# Set up covariance matrix of size n
 	n = 100
-	rho = 0.4
+	rho = 0.3
 	sigma = 1.0
 	V = create_covariance_matrix(sigma, rho, n)
 	#V[1,1] =0.4
@@ -326,19 +364,29 @@ if __name__ == '__main__':
 	print('Numerical support,', min(wVw), 'to', max(wVw), 'Valid support for Taylor series', 2*numpy.trace(V)/n )
 	
 	w, v = numpy.linalg.eig(V)
+	
+	draw_sum_of_chi_cdf(w)
+	exit()
 	#print(sum(w)/n,2*numpy.trace(V)/n)
 	#print(w)
 	w=[i.real/n for i in w]
 	x = hbe(coeff=w, x=2*sum(w))
 	print('Probability that wVw >', 2*sum(w),' for wVw distribution', x)
 	
+	x = hbe(coeff=w, x=0.5*sum(w))
+	print('Probability that wVw >', 0.001, ' for wVw distribution', x)
+	
 	print()
 	print('Variance of tracking error: Estimated from Taylor', numpy.trace(V)/n-taylor**2, 'and stdev', (numpy.trace(V)/n-taylor**2)**0.5)
 	print('Variance of tracking error: Actual:', numpy.var(wVw_sqrt), 'and stdev', numpy.var(wVw_sqrt)**0.5 )
 	
 	print('Check actual variance of tracking error from formula:',  numpy.mean(wVw) - numpy.mean(wVw_sqrt)**2)
+	
+	mu_x= numpy.trace(V)/n
+	sigma_sq = 2*numpy.average(numpy.square(V))
+	print((sigma_sq *0.25/mu_x)-(sigma_sq**2/(4*16*mu_x**3)))
  
-	exit()
+	#exit()
 	#draw histogram of vWv
 	from make_histogram_procedure import make_histogram
 	

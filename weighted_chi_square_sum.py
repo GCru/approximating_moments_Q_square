@@ -11,14 +11,14 @@ x=hbe(coeff=coeff_list, x=2)
 print(x)
 
 
-coeff_list=[0.005]*99
-coeff_list.append(1-0.005*99)
-print(coeff_list)
-x=hbe(coeff=coeff_list, x=2.5)
+#coeff_list=[0.005]*99
+#coeff_list.append(1-0.005*99)
+coeff_list=[0.5,0.1,0.1,0.1,0.1,0.1]
+print(coeff_list, sum(coeff_list))
+x=hbe(coeff=coeff_list, x=2)
 print(x)
 
-
-# should give value close to 0.95, actually 0.94908
-x=hbe(coeff=[0.25,0.25], x=1.0)
-
+coeff_list=[0.5,0.11,0.09,0.1,0.1,0.1]
+print(coeff_list, sum(coeff_list))
+x=hbe(coeff=coeff_list, x=2)
 print(x)
