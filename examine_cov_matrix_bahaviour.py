@@ -264,24 +264,37 @@ def draw_sum_of_chi_cdf(w):
 	plot0 = figure(plot_width=int(500), plot_height=500)
 	
 	n = 100
-	rho = 0.99
+	rho = 0.94
 	sigma = 1.0
 	V = create_covariance_matrix(sigma, rho, n)
 	w, v = numpy.linalg.eig(V)
+	w = [i.real / n for i in w]
 	
-	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
+	w=[0.005,0.005,0.005, 0.995]
+	w=[0.01,0.01,0.01,0.97]
+	#w=[0.2,0.2,0.2,0.2,0.2]
+	w=[0.40,0.2,0.3,0.1]
+	print('*****', hbe(coeff=w,x=1))
+	
+	#w=[0.499,0.001,0.499,0.001]
+	print(sum(w))
+	x_axis = [i*4* sum(w) / grain for i in range(1, grain + 1)]
 	
 	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
 	plot0.line(x_axis,y_axis, line_width=2)
 	
-	rho = 0.3
+	rho = 0.75
 	V = create_covariance_matrix(sigma, rho, n)
 	w, v = numpy.linalg.eig(V)
-	
-	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
+	w = [i.real / n for i in w]
+	w = [0.106, 0.106, 0.106, 0.682]
+	w=[0.25,0.25,0.25,0.25]
+	#w=[0.02,0.02,0.01,0.95]
+	print(sum(w))
+	x_axis = [i *4* sum(w) / grain for i in range(1, grain + 1)]
 	
 	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
-	plot0.line(x_axis, y_axis, line_width=2)
+	plot0.line(x_axis, y_axis, line_width=2, line_color="red" )
 	
 	show(plot0)
 	
