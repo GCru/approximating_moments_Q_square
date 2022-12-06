@@ -264,7 +264,7 @@ def draw_sum_of_chi_cdf(w):
 	plot0 = figure(plot_width=int(500), plot_height=500)
 	
 	n = 100
-	rho = 0.94
+	rho = 1.0
 	sigma = 1.0
 	V = create_covariance_matrix(sigma, rho, n)
 	w, v = numpy.linalg.eig(V)
@@ -326,8 +326,8 @@ if __name__ == '__main__':
 	
 	# Set up covariance matrix of size n
 	n = 100
-	rho = 0.3
-	sigma = 1.0
+	rho = 1.0
+	sigma = 0.1
 	V = create_covariance_matrix(sigma, rho, n)
 	#V[1,1] =0.4
 	
