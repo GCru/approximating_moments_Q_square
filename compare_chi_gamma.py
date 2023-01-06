@@ -10,7 +10,7 @@ from momentchi2 import hbe
 
 if __name__ == '__main__':
 
-	c=4
+	c=1
 	n=10
 	
 	print('chi_sqaure', chi2.cdf(x=10,df=n, scale=c))
