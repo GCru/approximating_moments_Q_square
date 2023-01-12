@@ -38,6 +38,7 @@ def create_covariance_matrix(sigma, rho, n):
 	
 	w, v = numpy.linalg.eig(V)
 	print('Max eigenvalue:', max(w), ' Min eigenvalue', min(w))
+	print(w)
 	# print(w)
 	# print(w)
 	
@@ -62,10 +63,11 @@ if __name__ == '__main__':
 	# exit()
 	
 	# Set up covariance matrix of size n
-	n = 100
-	rho = 1.0
+	n = 10
+	rho = 0 # set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
 	sigma = 0.1
 	V = create_covariance_matrix(sigma, rho, n)
+	print(V)
 	# V[1,1] =0.4
 	
 	I = numpy.zeros((n, n))
