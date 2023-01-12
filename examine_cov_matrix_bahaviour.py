@@ -44,25 +44,8 @@ def create_covariance_matrix(sigma, rho, n):
 	
 	return V
 
-def test_Marcenko_Pastur_covariance_matrix(sigma,n,T):
-	"""
-	:param sigma: standard deviation
-	:param n: number of assets
-	:param T: number of time intervals
-	:return:
-	"""
-	
-	R = numpy.random.default_rng().normal(loc=0, scale = sigma, size=(n,T))
-	V = numpy.matmul(R, numpy.transpose(R))/T
-	
-	w, v = numpy.linalg.eig(V)
-	print('Max eigenvalue:', max(w), ' Min eigenvalue', min(w))
-	print('Theoretical max eigenvalue', (1 + (n / T) ** 0.5) ** 2)
-	
-	return V
 	
 	
-
 def calculate_active_returns(V, z):
 	# Caluclate minimum posibble bencmark return
 	
@@ -84,7 +67,7 @@ def calculate_active_returns(V, z):
 
 def calculate_distribution_of_random_funds_returns():
 	
-	# for any set of returns r the distribution of fund returns where funds are drawn from
+	# for any set of returns r the distribution of fund returns where fund weights are drawn from
 	# standard normal distribution then we get a normal distribution
 	# bevause it is an affine transormation
 	
@@ -108,7 +91,7 @@ def calculate_distribution_of_random_funds_returns():
 	return
 
 
-def calculate_variance_spread_from_V(V, sigma, rho):
+def calculate_variance_of_V(V, sigma, rho):
 	""" Calculate the variance of wVw with w a random normal with variance = 1/n. This is similar to calculate
 		XX with X a draw form the N(0,V). Under certain conditons (e.g. rho=0) it follows a cgi squared distribtion
 		with mean n/n and variance 2/n. See
@@ -137,7 +120,7 @@ def calculate_variance_spread_from_V(V, sigma, rho):
 
 
 def see_how_random_fund_weights_work(n):
-	"""
+	"""We compare  independent normal active fund weights with active fund weights that add to zero.
 	
 	:param n: Number of active positons
 	:return:
@@ -164,13 +147,12 @@ def see_how_random_fund_weights_work(n):
 		print('EUclidean share difference', A_euclid - A_euclid_adjust)
 		sum_list.append(numpy.sum(w))
 
-	
 	return
 	
 
 def examine_standardized_fund_return(V):
 	""" Calculate the variance of wVw with w a random normal with variance = 1/n. This is similar to calculate
-		XX with X a draw form the N(0,V). Under certain conditons (e.g. rho=0) it follows a cgi squared distribtion
+		XX with X a draw form the N(0,V). Under certain conditons (e.g. rho=0) it follows a chi squared distribtion
 		with mean n/n and variance 2/n. See
 		https://stats.stackexchange.com/questions/364446/distribution-of-the-sample-variance-of-values-from-a-multivariate-normal-distrib
 	:param V:
@@ -256,10 +238,7 @@ def examine_standardized_fund_return(V):
 
 def draw_sum_of_chi_cdf(w):
 	
-	
-	
 	grain=100
-	
 	
 	plot0 = figure(plot_width=int(500), plot_height=500)
 	
