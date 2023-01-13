@@ -109,6 +109,34 @@ def calculate_taylor_2_var_sqrt_wVw(V):
 	return var_sqrt_wVw_taylor_2
 
 
+def calculate_taylor_3_var_sqrt_vWv(V):
+	
+	eigenvalue_list, _ = numpy.linalg.eig(V)
+
+	kappa_list=[]
+	
+	for idx in range(5):
+		if idx == 0:
+			kappa_list.append(0)
+		else:
+			kappa_list.append(calculate_cumulant(idx, eigenvalue_list))
+
+	var_Q = kappa_list[2]
+	
+	var_Q_sqr = kappa_list[4]+4*kappa_list[3]*kappa_list[1] + 2*kappa_list[2]**2 + 4* kappa_list[2]*kappa_list[1]**2
+	
+	cov_Q_Q_sqr = kappa_list[3] + 2* kappa_list[2] *kappa_list[1]
+	
+	term1 = (9/16) * var_Q /kappa_list[1]
+	
+	term2 = (1/64)*var_Q_sqr/kappa_list[1]**3
+	
+	term3 = (3/16)*cov_Q_Q_sqr/kappa_list[1]**2
+	
+	return term1+term2-term3
+	
+	
+
 def calculate_upper_bound_mean_sqrt_wVw(V):
 	
 	n = numpy.shape(V)[0]
@@ -140,8 +168,8 @@ if __name__ == '__main__':
 	# exit()
 	
 	# Set up covariance matrix of size n
-	n = 10
-	rho = 0.0# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
+	n = 20
+	rho = 0# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
 	sigma = 0.1**0.5
 	V = create_covariance_matrix(sigma, rho, n)
 	print(V)
@@ -181,7 +209,13 @@ if __name__ == '__main__':
 	print('Percentage error taylor 2 vs monte carlo for variance')
 	print(100 * (var_sqrt_wVw_taylor_2 - var_sqrt_wVw_monte_carlo) / (var_sqrt_wVw_monte_carlo), '%')
 	
-	print(0.798*(numpy.trace(V)/numpy.shape(V)[0])**0.5)
+	var_sqrt_wVw_taylor_3 = calculate_taylor_3_var_sqrt_vWv(V)
+	print(var_sqrt_wVw_taylor_3)
+	
+	print('Percentage error taylor 2 vs monte carlo for variance')
+	print(100 * (var_sqrt_wVw_taylor_3 - var_sqrt_wVw_monte_carlo) / (var_sqrt_wVw_monte_carlo), '%')
+	
+	print(numpy.trace(V)/(2*numpy.shape(V)[0]**2))
 	exit()
 	
 
