@@ -79,8 +79,6 @@ def calculate_algebraic_moments_wVw(V):
 	return mean_wVw_algebraic, var_wVw_algebraic
 
 
-
-
 def calculate_cumulant(k, eigenvalue_list ):
 	
 	n=len(eigenvalue_list)
@@ -101,6 +99,14 @@ def calculate_taylor_mean_sqrt_wVw(V):
 		numpy.square(V))
 	
 	return mean_sqrt_wVw_taylor
+
+
+def calculate_taylor_2_var_sqrt_wVw(V):
+	n = numpy.shape(V)[0]
+	
+	var_sqrt_wVw_taylor_2 = (numpy.linalg.norm(V)**2)/ (2*n*numpy.trace(V))
+	
+	return var_sqrt_wVw_taylor_2
 
 
 def calculate_upper_bound_mean_sqrt_wVw(V):
@@ -134,13 +140,12 @@ if __name__ == '__main__':
 	# exit()
 	
 	# Set up covariance matrix of size n
-	n = 100
-	rho = 1 # set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
-	sigma = 0.1
+	n = 10
+	rho = 0.0# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
+	sigma = 0.1**0.5
 	V = create_covariance_matrix(sigma, rho, n)
 	print(V)
 	#V[1,1] =0.4
-	
 	# Calculate eigenvalues
 	eigenvalue_list, _ = numpy.linalg.eig(V)
 	print('Max eigenvalue:', max(eigenvalue_list), ' Min eigenvalue', min(eigenvalue_list))
@@ -166,54 +171,19 @@ if __name__ == '__main__':
 	
 	print('Percentage error taylor vs monte carlo for expected value')
 	print(100* (mean_sqrt_wVw_taylor-mean_sqrt_wVw_monte_carlo)/(mean_sqrt_wVw_monte_carlo),'%')
+	
+	
+	
+	var_sqrt_wVw_taylor_2 = calculate_taylor_2_var_sqrt_wVw((V))
+	
+	print(var_sqrt_wVw_taylor_2, var_sqrt_wVw_monte_carlo, numpy.trace(V)/(2*numpy.shape(V)[0]**2))
+	
+	print('Percentage error taylor 2 vs monte carlo for variance')
+	print(100 * (var_sqrt_wVw_taylor_2 - var_sqrt_wVw_monte_carlo) / (var_sqrt_wVw_monte_carlo), '%')
+	
+	print(0.798*(numpy.trace(V)/numpy.shape(V)[0])**0.5)
 	exit()
 	
-	I = numpy.zeros((n, n))
-	numpy.fill_diagonal(I, 1)
-	
-	wVw = []
-	wVw_sqrt = []
-	adjusted_wVw = []
-	fund_sigma_if_zero_sum = []
-	for count in range(1000):
-		w = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1 / n) * I)
-		
-		wVw.append(numpy.dot(w, numpy.dot(V, w)))
-		wVw_sqrt.append(wVw[-1] ** 0.5)
-		
-		adjusted_w = w + (0 - numpy.sum(w) / n)
-		adjusted_wVw.append(numpy.dot(adjusted_w, numpy.dot(V, adjusted_w)))
-		
-		# print(numpy.sum(w), wVw[-1], numpy.sum(adjusted_w), adjusted_wVw[-1])
-		
-		adjusted_A_euclid = numpy.dot(adjusted_w, adjusted_w) ** 0.5
-		fund_sigma_if_zero_sum.append((adjusted_A_euclid * sigma * (1 - rho) ** 0.5) ** 2)
-	
-	print()
-	print('Mean of tracking error variance. Actual ', numpy.mean(wVw), 'Theoretical', numpy.trace(V) / n)
-	
-	# print('Mean when weights are adjusted', numpy.mean(adjusted_wVw), 'Theoretical mean',  numpy.mean(fund_sigma_if_zero_sum) )
-	
-	print('Variance of tracking error variance. Actual:', numpy.var(wVw), 'Theoretical',
-		  2 * ((rho ** 2) * (n - 1) * n + (sigma ** 2) * n) / (n * n), 'or', 2 * numpy.average(numpy.square(V)))
-	
-	print()
-	print('Expected value (mean) of tracking error. Actual: ', numpy.mean(wVw_sqrt), 'Theoretical upper bound:',
-		  (numpy.trace(V) / n) ** 0.5)
-	
-	# print('Check by calculating mean tracking error variance from formula', numpy.mean(wVw_sqrt)**2+ numpy.var(wVw_sqrt) )
-	
-	taylor = (numpy.trace(V) / n) ** 0.5 - (1.0 / 8.0) * (numpy.trace(V) / n) ** (-1.5) * 2 * numpy.average(
-		numpy.square(V))
-	print('Expected value (mean) of tracking error. Taylor: ', taylor)
-	print('Percentage error taylor', 100 * (taylor - numpy.mean(wVw_sqrt)) / numpy.mean(wVw_sqrt), '%',
-		  'Percentage error upper bound',
-		  100 * ((numpy.trace(V) / n) ** 0.5 - numpy.mean(wVw_sqrt)) / numpy.mean(wVw_sqrt), '%')
-	
-	print()
-	print('Numerical support,', min(wVw), 'to', max(wVw), 'Valid support for Taylor series', 2 * numpy.trace(V) / n)
-	
-	w, v = numpy.linalg.eig(V)
-	
+
 	#draw_sum_of_chi_cdf(w)
 	exit()
