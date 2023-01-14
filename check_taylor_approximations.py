@@ -38,7 +38,7 @@ def create_covariance_matrix(sigma, rho, n):
 	
 	return V
 
-def monte_carlo_moments_wVw_and_sqrt_wVw(V, iterations=1000):
+def monte_carlo_moments_wVw_and_sqrt_wVw(V, iterations=10000):
 	
 	n=numpy.shape(V)[0]
 	
@@ -150,6 +150,32 @@ def calculate_taylor_suport_algebraic(V):
 	return 0, 2 * numpy.trace(V)
 
 
+def calculate_sqrt_wVw_algebraic_max(V):
+	
+	n = numpy.shape(V)[0]
+	mean_chi_1 = (2**0.5)*math.gamma(1)/math.gamma(0.5)
+	
+	mean_sqrt_wVw_algebraic_max = ((numpy.trace(V)/n)**0.5) *mean_chi_1
+	
+	var_sqrt_wVw_algebraic_max = (numpy.trace(V)/n)*(1-mean_chi_1**2)
+	
+	return mean_sqrt_wVw_algebraic_max,var_sqrt_wVw_algebraic_max
+
+
+def calculate_sqrt_wVw_algebraic_min(V):
+	
+	n = numpy.shape(V)[0]
+	
+	mean_chi_n = (2 ** 0.5) * math.gamma((n+1)/2) / math.gamma(n/2)
+	
+	mean_sqrt_wVw_algebraic_min = (numpy.trace(V)** 0.5) * mean_chi_n/n
+	
+	var_sqrt_wVw_algebraic_min = (numpy.trace(V) / n) * (1 - mean_chi_n**2/n)
+	
+	return mean_sqrt_wVw_algebraic_min, var_sqrt_wVw_algebraic_min
+
+	
+
 if __name__ == '__main__':
 	
 	# examine how random funds weights work
@@ -168,8 +194,8 @@ if __name__ == '__main__':
 	# exit()
 	
 	# Set up covariance matrix of size n
-	n = 20
-	rho = 0# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
+	n = 10
+	rho = 0.00# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
 	sigma = 0.1**0.5
 	V = create_covariance_matrix(sigma, rho, n)
 	print(V)
@@ -204,18 +230,27 @@ if __name__ == '__main__':
 	
 	var_sqrt_wVw_taylor_2 = calculate_taylor_2_var_sqrt_wVw((V))
 	
-	print(var_sqrt_wVw_taylor_2, var_sqrt_wVw_monte_carlo, numpy.trace(V)/(2*numpy.shape(V)[0]**2))
+	print('Monte carlo var sqrt wVw: ',  var_sqrt_wVw_monte_carlo, numpy.trace(V)/(2*numpy.shape(V)[0]**2))
+	print('Taylor 2 var sqrt wVw: ', var_sqrt_wVw_taylor_2)
 	
 	print('Percentage error taylor 2 vs monte carlo for variance')
 	print(100 * (var_sqrt_wVw_taylor_2 - var_sqrt_wVw_monte_carlo) / (var_sqrt_wVw_monte_carlo), '%')
 	
 	var_sqrt_wVw_taylor_3 = calculate_taylor_3_var_sqrt_vWv(V)
-	print(var_sqrt_wVw_taylor_3)
+	print('Taylor 3 var: ', var_sqrt_wVw_taylor_3)
 	
-	print('Percentage error taylor 2 vs monte carlo for variance')
+	print('Percentage error taylor 3 vs monte carlo for variance')
 	print(100 * (var_sqrt_wVw_taylor_3 - var_sqrt_wVw_monte_carlo) / (var_sqrt_wVw_monte_carlo), '%')
 	
-	print(numpy.trace(V)/(2*numpy.shape(V)[0]**2))
+	print(numpy.trace(V)/(2*numpy.shape(V)[0]**2), numpy.trace(V)/(numpy.shape(V)[0]**3))
+	
+	mean_sqrt_wVw_algebraic_max, var_sqrt_wVw_algebraic_max =calculate_sqrt_wVw_algebraic_max((V))
+	print('Algebraic maximum mean: ', mean_sqrt_wVw_algebraic_max, 'Algebraic maximum var: ', var_sqrt_wVw_algebraic_max)
+	
+	mean_sqrt_wVw_algebraic_min, var_sqrt_wVw_algebraic_min = calculate_sqrt_wVw_algebraic_min((V))
+	print('Algebraic minimum mean: ', mean_sqrt_wVw_algebraic_min, 'Algebraic minimum var: ',
+		  var_sqrt_wVw_algebraic_min )
+	
 	exit()
 	
 
