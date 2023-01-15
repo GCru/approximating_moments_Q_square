@@ -53,14 +53,14 @@ def calculate_cumulant(k, eigenvalue_list):
 	return kappa * sum_product
 
 
-def calculate_taylor_mean_sqrt_wVw(eigenvalues):
+def calculate_taylor_mean_sqrt(eigenvalues):
 	
 	n = len(eigenvalues)
 	eigenvalues_sum=sum(eigenvalues)
 	
-	mean_sqrt_wVw_taylor = (numpy.trace(V) / n) ** 0.5 - (1.0 / 8.0) * (numpy.trace(V) / n) ** (
-		-1.5) * 2 * numpy.average(
-		numpy.square(V))
+	u_Q_sqrt = calculate_cumulant(1, eigenvalues)**0.5
+	
+	mean_sqrt_wVw_taylor = u_Q_sqrt  - (1/8) * (1 / u_Q_sqrt)**3 * calculate_cumulant(2, eigenvalues)
 	
 	return mean_sqrt_wVw_taylor
 
@@ -103,12 +103,16 @@ def calculate_taylor_3_var_sqrt_vWv(V):
 if __name__ == '__main__':
 	
 	
-	n = 10
-	eigenvalues = drs(2,1)
+	n = 100
+	eigenvalues = drs(n,1)
+	print(eigenvalues)
 
-	eigenvalues=[0.1]*10
+	#n=1
+	#eigenvalues=[1]
 	mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(eigenvalues)
 	
 	print(mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo)
 	
+	print(calculate_taylor_mean_sqrt(eigenvalues))
 	
+	print('Error: ',100* (calculate_taylor_mean_sqrt(eigenvalues)- mean_lin_comb_chi_monte_carlo)/mean_lin_comb_chi_monte_carlo, '%' )
