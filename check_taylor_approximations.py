@@ -24,6 +24,27 @@ from fundskill_utilities.fundskill_shared_bokeh_utilities import setup_date_tick
 from bokeh_constants import *"""
 
 
+def draw_sum_of_chi_cdf(eigenvalue_list):
+	grain = 100
+	
+	plot0 = figure(plot_width=int(500), plot_height=500)
+	
+	w = eigenvalue_list
+	w = [i.real / n for i in w]
+	for idx, item in enumerate(w):
+		if item<=0:
+			w[idx]=0.0001
+	
+	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
+	
+	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
+	plot0.line(x_axis, y_axis, line_width=2)
+	
+	show(plot0)
+	
+	return
+
+
 def create_covariance_matrix(sigma, rho, n):
 	""" Create a covariance matrix
 	:param sigma:
@@ -46,6 +67,8 @@ def monte_carlo_moments_wVw_and_sqrt_wVw(V, iterations=10000):
 	numpy.fill_diagonal(I, 1)
 	wVw = []
 	wVw_sqrt = []
+	
+	three_term_taylor_list =[]
 
 	for count in range(iterations):
 		
@@ -53,6 +76,11 @@ def monte_carlo_moments_wVw_and_sqrt_wVw(V, iterations=10000):
 		
 		wVw.append(numpy.dot(w, numpy.dot(V, w)))
 		wVw_sqrt.append(wVw[-1] ** 0.5)
+		
+		mu_q=numpy.trace(V)/n
+		three_term_taylor_list.append(((3/4)/mu_q**0.5)*wVw[-1] - ((1/8)/mu_q**1.5)*wVw[-1]*wVw[-1] )
+		
+	print('##############', numpy.var(three_term_taylor_list))
 		
 	mean_wVw_monte_carlo = numpy.mean(wVw)
 	mean_sqrt_wVw_monte_carlo = numpy.mean(wVw_sqrt)
@@ -82,7 +110,7 @@ def calculate_algebraic_moments_wVw(V):
 def calculate_cumulant(k, eigenvalue_list ):
 	
 	n=len(eigenvalue_list)
-	kappa = 2**(k-1)*math.factorial(k-1) / n**k
+	kappa = (2**(k-1))*math.factorial(k-1) / n**k
 
 	sum_product = 0
 	for eigenvalue in eigenvalue_list:
@@ -144,10 +172,10 @@ def calculate_upper_bound_mean_sqrt_wVw(V):
 	return   (numpy.trace(V) / n) ** 0.5
 
 
-def calculate_taylor_suport_algebraic(V):
+def calculate_taylor_support_algebraic(V):
 	
 	n = numpy.shape(V)[0]
-	return 0, 2 * numpy.trace(V)
+	return 0, 2 * numpy.trace(V)/n
 
 
 def calculate_sqrt_wVw_algebraic_max(V):
@@ -195,7 +223,7 @@ if __name__ == '__main__':
 	
 	# Set up covariance matrix of size n
 	n = 10
-	rho = 0.00# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
+	rho = 0.3# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
 	sigma = 0.1**0.5
 	V = create_covariance_matrix(sigma, rho, n)
 	print(V)
@@ -250,9 +278,11 @@ if __name__ == '__main__':
 	mean_sqrt_wVw_algebraic_min, var_sqrt_wVw_algebraic_min = calculate_sqrt_wVw_algebraic_min((V))
 	print('Algebraic minimum mean: ', mean_sqrt_wVw_algebraic_min, 'Algebraic minimum var: ',
 		  var_sqrt_wVw_algebraic_min )
+
+	print(numpy.trace(V)* (0.5/n**2-(7/8)/n**3+0.75/n**4))
 	
-	exit()
+	print(calculate_taylor_support_algebraic(V) ,taylor_support_min_monte_carlo, taylor_support_max_monte_carlo )
 	
 
-	#draw_sum_of_chi_cdf(w)
+	draw_sum_of_chi_cdf(eigenvalue_list)
 	exit()
