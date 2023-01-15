@@ -223,7 +223,7 @@ if __name__ == '__main__':
 	
 	# Set up covariance matrix of size n
 	n = 10
-	rho = 0.3# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
+	rho = 0.0# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
 	sigma = 0.1**0.5
 	V = create_covariance_matrix(sigma, rho, n)
 	print(V)
