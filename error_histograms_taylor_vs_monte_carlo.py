@@ -60,9 +60,9 @@ def calculate_taylor_mean_sqrt(eigenvalues):
 	
 	u_Q_sqrt = calculate_cumulant(1, eigenvalues)**0.5
 	
-	mean_sqrt_wVw_taylor = u_Q_sqrt  - (1/8) * (1 / u_Q_sqrt)**3 * calculate_cumulant(2, eigenvalues)
+	mean_sqrt_taylor = u_Q_sqrt  - (1/8) * (1 / u_Q_sqrt)**3 * calculate_cumulant(2, eigenvalues)
 	
-	return mean_sqrt_wVw_taylor
+	return mean_sqrt_taylor
 
 
 def calculate_taylor_2_var_sqrt_wVw(V):
@@ -105,14 +105,16 @@ if __name__ == '__main__':
 	
 	n = 100
 	eigenvalues = drs(n,1)
-	print(eigenvalues)
+	#print(eigenvalues)
 
-	#n=1
-	#eigenvalues=[1]
+	n=1
+	eigenvalues=[0.04, 0.64, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04,]
 	mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(eigenvalues)
+	
+	mean_sqrt_taylor = calculate_taylor_mean_sqrt(eigenvalues)
 	
 	print(mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo)
 	
-	print(calculate_taylor_mean_sqrt(eigenvalues))
+	print(mean_sqrt_taylor)
 	
-	print('Error: ',100* (calculate_taylor_mean_sqrt(eigenvalues)- mean_lin_comb_chi_monte_carlo)/mean_lin_comb_chi_monte_carlo, '%' )
+	print('Error: ',100* (mean_sqrt_taylor-mean_lin_comb_chi_monte_carlo)/mean_lin_comb_chi_monte_carlo, '%' )

@@ -80,7 +80,7 @@ def monte_carlo_moments_wVw_and_sqrt_wVw(V, iterations=10000):
 		mu_q=numpy.trace(V)/n
 		three_term_taylor_list.append(((3/4)/mu_q**0.5)*wVw[-1] - ((1/8)/mu_q**1.5)*wVw[-1]*wVw[-1] )
 		
-	print('##############', numpy.var(three_term_taylor_list))
+	print('Monte carlo taylor 3: ', numpy.var(three_term_taylor_list))
 		
 	mean_wVw_monte_carlo = numpy.mean(wVw)
 	mean_sqrt_wVw_monte_carlo = numpy.mean(wVw_sqrt)
@@ -222,66 +222,62 @@ if __name__ == '__main__':
 	# exit()
 	
 	# Set up covariance matrix of size n
-	n = 10
+	n = 2
 	rho = 0.0# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
 	sigma = 0.1**0.5
 	V = create_covariance_matrix(sigma, rho, n)
-	print(V)
+	#print(V)
 	#V[1,1] =0.4
 	# Calculate eigenvalues
 	eigenvalue_list, _ = numpy.linalg.eig(V)
 	print('Max eigenvalue:', max(eigenvalue_list), ' Min eigenvalue', min(eigenvalue_list))
-	print(eigenvalue_list)
+	print('Eigenvalue list: ', eigenvalue_list)
 	
-	# Calculate cumulant
-	k=3
-	print('Cumulant ',k, ': ', calculate_cumulant(k, eigenvalue_list))
 	
 	# Calculate mean and variance using monte carlo
 	mean_wVw_monte_carlo, var_wVw_monte_carlo, mean_sqrt_wVw_monte_carlo, var_sqrt_wVw_monte_carlo,\
 		taylor_support_min_monte_carlo, taylor_support_max_monte_carlo = monte_carlo_moments_wVw_and_sqrt_wVw(V)
 	
 	
-	print(mean_wVw_monte_carlo, var_wVw_monte_carlo, mean_sqrt_wVw_monte_carlo, var_sqrt_wVw_monte_carlo)
+	#print(mean_wVw_monte_carlo, var_wVw_monte_carlo, mean_sqrt_wVw_monte_carlo, var_sqrt_wVw_monte_carlo)
+	#print(mean_wVw_monte_carlo) mean_sqrt_wVw_monte_carlo, var_sqrt_wVw_monte_carlo)
+	
+	
 	# Calculate algebraic mean and varince of wVw
 	mean_wVw_algebraic, var_wVw_elgebraic = calculate_algebraic_moments_wVw(V)
 	
-	print(mean_wVw_algebraic, var_wVw_monte_carlo)
-	
 	mean_sqrt_wVw_taylor = calculate_taylor_mean_sqrt_wVw(V)
-	print(mean_sqrt_wVw_taylor)
+	print('Mean srqt wVw monte carlo: ', mean_sqrt_wVw_monte_carlo, 'Mean sqrt wVw taylor: ', mean_sqrt_wVw_taylor)
 	
-	print('Percentage error taylor vs monte carlo for expected value')
-	print(100* (mean_sqrt_wVw_taylor-mean_sqrt_wVw_monte_carlo)/(mean_sqrt_wVw_monte_carlo),'%')
+	print('Percentage error taylor vs monte carlo for expected value: ',
+		  100* (mean_sqrt_wVw_taylor-mean_sqrt_wVw_monte_carlo)/(mean_sqrt_wVw_monte_carlo),'%')
 	
 	
-	
+	print()
 	var_sqrt_wVw_taylor_2 = calculate_taylor_2_var_sqrt_wVw((V))
 	
-	print('Monte carlo var sqrt wVw: ',  var_sqrt_wVw_monte_carlo, numpy.trace(V)/(2*numpy.shape(V)[0]**2))
+	print('Monte carlo var sqrt wVw: ',  var_sqrt_wVw_monte_carlo)
 	print('Taylor 2 var sqrt wVw: ', var_sqrt_wVw_taylor_2)
 	
-	print('Percentage error taylor 2 vs monte carlo for variance')
-	print(100 * (var_sqrt_wVw_taylor_2 - var_sqrt_wVw_monte_carlo) / (var_sqrt_wVw_monte_carlo), '%')
+	print('Percentage error taylor 2 vs monte carlo for variance: ',
+		  100 * (var_sqrt_wVw_taylor_2 - var_sqrt_wVw_monte_carlo) / (var_sqrt_wVw_monte_carlo), '%')
 	
 	var_sqrt_wVw_taylor_3 = calculate_taylor_3_var_sqrt_vWv(V)
 	print('Taylor 3 var: ', var_sqrt_wVw_taylor_3)
 	
-	print('Percentage error taylor 3 vs monte carlo for variance')
-	print(100 * (var_sqrt_wVw_taylor_3 - var_sqrt_wVw_monte_carlo) / (var_sqrt_wVw_monte_carlo), '%')
-	
-	print(numpy.trace(V)/(2*numpy.shape(V)[0]**2), numpy.trace(V)/(numpy.shape(V)[0]**3))
-	
+	print('Percentage error taylor 3 vs monte carlo for variance: ',
+		  100 * (var_sqrt_wVw_taylor_3 - var_sqrt_wVw_monte_carlo) / (var_sqrt_wVw_monte_carlo), '%')
+
+	print()
 	mean_sqrt_wVw_algebraic_max, var_sqrt_wVw_algebraic_max =calculate_sqrt_wVw_algebraic_max((V))
 	print('Algebraic maximum mean: ', mean_sqrt_wVw_algebraic_max, 'Algebraic maximum var: ', var_sqrt_wVw_algebraic_max)
 	
 	mean_sqrt_wVw_algebraic_min, var_sqrt_wVw_algebraic_min = calculate_sqrt_wVw_algebraic_min((V))
 	print('Algebraic minimum mean: ', mean_sqrt_wVw_algebraic_min, 'Algebraic minimum var: ',
 		  var_sqrt_wVw_algebraic_min )
-
-	print(numpy.trace(V)* (0.5/n**2-(7/8)/n**3+0.75/n**4))
 	
-	print(calculate_taylor_support_algebraic(V) ,taylor_support_min_monte_carlo, taylor_support_max_monte_carlo )
+	print('Algebraic taylor support ', calculate_taylor_support_algebraic(V) ,
+		  'Monte carlo ', taylor_support_min_monte_carlo, taylor_support_max_monte_carlo )
 	
 
 	draw_sum_of_chi_cdf(eigenvalue_list)
