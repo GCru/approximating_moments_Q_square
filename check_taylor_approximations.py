@@ -35,11 +35,13 @@ def draw_sum_of_chi_cdf(eigenvalue_list):
 		if item<=0:
 			w[idx]=0.0001
 	
-	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
+	x_axis = [i * 5 * sum(w) / grain for i in range(1, grain + 1)]
 	
 	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2)
 	
+	#plot0.x_range=Range1d(0,1)
+	plot0.y_range=Range1d(0,1)
 	show(plot0)
 	
 	return
@@ -80,13 +82,18 @@ def monte_carlo_moments_wVw_and_sqrt_wVw(V, iterations=10000):
 		mu_q=numpy.trace(V)/n
 		three_term_taylor_list.append(((3/4)/mu_q**0.5)*wVw[-1] - ((1/8)/mu_q**1.5)*wVw[-1]*wVw[-1] )
 		
-	print('Monte carlo taylor 3: ', numpy.var(three_term_taylor_list))
+	print('Monte carlo taylor 3 var: ', numpy.var(three_term_taylor_list))
 		
 	mean_wVw_monte_carlo = numpy.mean(wVw)
 	mean_sqrt_wVw_monte_carlo = numpy.mean(wVw_sqrt)
 	
 	var_wVw_monte_carlo = numpy.var(wVw)
 	var_sqrt_wVw_monte_carlo =numpy.var(wVw_sqrt)
+	
+	# cumlative distribution
+	wVw.sort()
+	for i in range(0,iterations, 100):
+		print('x value ', wVw[i],'cumulative prob function ',  i/10000, )
 	
 	taylor_support_min_monte_carlo = min(wVw)
 	taylor_support_max_monte_carlo = max(wVw)
@@ -223,8 +230,8 @@ if __name__ == '__main__':
 	
 	# Set up covariance matrix of size n
 	n = 2
-	rho = 0.0# set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
-	sigma = 0.1**0.5
+	rho = 0.5 # set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
+	sigma = 0.1**0.5/n
 	V = create_covariance_matrix(sigma, rho, n)
 	#print(V)
 	#V[1,1] =0.4
@@ -243,14 +250,24 @@ if __name__ == '__main__':
 	#print(mean_wVw_monte_carlo) mean_sqrt_wVw_monte_carlo, var_sqrt_wVw_monte_carlo)
 	
 	
+	print()
+	
 	# Calculate algebraic mean and varince of wVw
 	mean_wVw_algebraic, var_wVw_elgebraic = calculate_algebraic_moments_wVw(V)
 	
-	mean_sqrt_wVw_taylor = calculate_taylor_mean_sqrt_wVw(V)
-	print('Mean srqt wVw monte carlo: ', mean_sqrt_wVw_monte_carlo, 'Mean sqrt wVw taylor: ', mean_sqrt_wVw_taylor)
+	mean_sqrt_wVw_taylor_2 = (numpy.trace(V)/n)**0.5
+	print('Mote Carlo mean srqt wVw: ', mean_sqrt_wVw_monte_carlo)
+	print('Taylor 2 mean sqrt: ', mean_sqrt_wVw_taylor_2)
 	
-	print('Percentage error taylor vs monte carlo for expected value: ',
-		  100* (mean_sqrt_wVw_taylor-mean_sqrt_wVw_monte_carlo)/(mean_sqrt_wVw_monte_carlo),'%')
+	print('Percentage error taylor 2 vs monte carlo for expected value: ',
+		  100 * (mean_sqrt_wVw_taylor_2 - mean_sqrt_wVw_monte_carlo) / (mean_sqrt_wVw_monte_carlo), '%')
+	
+	
+	mean_sqrt_wVw_taylor_3 = calculate_taylor_mean_sqrt_wVw(V)
+	print('Taylor 3 mean srqt wVw monte carlo: ', mean_sqrt_wVw_taylor_3)
+	
+	print('Percentage error taylor 3 vs monte carlo for expected value: ',
+		  100* (mean_sqrt_wVw_taylor_3-mean_sqrt_wVw_monte_carlo)/(mean_sqrt_wVw_monte_carlo),'%')
 	
 	
 	print()
