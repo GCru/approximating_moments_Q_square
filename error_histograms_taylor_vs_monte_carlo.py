@@ -110,12 +110,13 @@ if __name__ == '__main__':
 	var_taylor2_errors = []
 	var_taylor3_errors = []
 	for counter in range(100):
-		n = 100
+		n = 10
 		eigenvalues = drs(n,1)
 		#print(eigenvalues)
 	
 		#n=2
-		eigenvalues=[0.46, 0./9, 0.5/9, 0.5/9, 0.5/9,0.5/9, 0.5/9,0.5/9, 0.5/9,0.5/9]
+		eigenvalues=[1,0,0,0,0,0,0,0,0,0]
+		#eigenvalues=[0.4, 0.4/9, 0.4/9, 0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9]
 		#eigenvalues=[0.4, 0.4, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8,]
 		#eigenvalues=[0.3, 0.3, 0.3, 0.1/7,0.1/7,0.1/7,0.1/7,0.1/7,0.1/7,0.1/7]
 		mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(eigenvalues)
