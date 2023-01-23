@@ -25,7 +25,7 @@ from bokeh_constants import *"""
 
 
 def draw_sum_of_chi_cdf(eigenvalue_list):
-	grain = 100
+	grain = 1000
 	
 	plot0 = figure(plot_width=int(500), plot_height=500)
 	
@@ -229,9 +229,10 @@ if __name__ == '__main__':
 	# exit()
 	
 	# Set up covariance matrix of size n
-	n = 2
-	rho = 0.5 # set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
-	sigma = 0.1**0.5/n
+	n = 10
+	rho = 0.4 # set to zero for all eigenvalues the same and set to one for only one positve eigenvalue
+	# max of left side at zero if rho =4
+	sigma = 0.1**0.5
 	V = create_covariance_matrix(sigma, rho, n)
 	#print(V)
 	#V[1,1] =0.4

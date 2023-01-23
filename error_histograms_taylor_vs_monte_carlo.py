@@ -115,8 +115,9 @@ if __name__ == '__main__':
 		#print(eigenvalues)
 	
 		#n=2
-		#eigenvalues=[0.04, 0.64, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04,]
+		eigenvalues=[0.46, 0./9, 0.5/9, 0.5/9, 0.5/9,0.5/9, 0.5/9,0.5/9, 0.5/9,0.5/9]
 		#eigenvalues=[0.4, 0.4, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8,]
+		#eigenvalues=[0.3, 0.3, 0.3, 0.1/7,0.1/7,0.1/7,0.1/7,0.1/7,0.1/7,0.1/7]
 		mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(eigenvalues)
 		print('Monte carlo mean', mean_lin_comb_chi_monte_carlo)
 		
