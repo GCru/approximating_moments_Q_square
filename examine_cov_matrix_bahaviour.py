@@ -249,10 +249,10 @@ def draw_sum_of_chi_cdf(w):
 	w, v = numpy.linalg.eig(V)
 	w = [i.real / n for i in w]
 	
-	w=[0.005,0.005,0.005, 0.995]
-	w=[0.01,0.01,0.01,0.97]
+	w=[0.01/3,0.01/3,0.01/3, 0.999]
+	#w=[0.01,0.01,0.01,0.97]
 	#w=[0.2,0.2,0.2,0.2,0.2]
-	w=[0.40,0.2,0.3,0.1]
+	#w=[0.40,0.2,0.3,0.1]
 	print('*****', hbe(coeff=w,x=1))
 	
 	#w=[0.499,0.001,0.499,0.001]
@@ -285,6 +285,9 @@ def draw_sum_of_chi_cdf(w):
 
 	
 if __name__ == '__main__':
+	
+	draw_sum_of_chi_cdf([0,1])
+	exit();
 	
 	# examine how random funds weights work
 	#see_how_random_fund_weights_work(100)
