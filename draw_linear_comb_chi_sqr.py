@@ -1,4 +1,4 @@
-import numpy
+import numpy, math
 from datetime import date
 from statistics import stdev, mean
 from math import pi, log, sqrt
@@ -58,7 +58,7 @@ def draw_sum_of_chi_cdf(w):
 	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2, line_color="red")
 	
-	y_axis = [chi2.cdf(item,4,scale=1/4) for item in x_axis]
+	y_axis = [chi2.cdf(item,100,scale=1/100) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2, line_color="black")
 	
 	
@@ -67,7 +67,29 @@ def draw_sum_of_chi_cdf(w):
 	return
 
 
+def draw_function():
+
+	grain = 100
+	
+	plot0 = figure(plot_width=int(500), plot_height=500)
+	
+	x_min=0
+	x_max=10
+	
+	x_axis = [i*(x_max-x_min)/ grain for i in range(1, grain + 1)]
+	
+	y_axis = [math.exp(-item) for item in x_axis]
+	plot0.line(x_axis, y_axis, line_width=2)
+	
+	y_axis= [math.exp(-item/10) for item in x_axis]
+	plot0.line(x_axis, y_axis, line_width=2,line_color='black')
+	
+	show(plot0)
+	return
+
 if __name__ == '__main__':
+	draw_function()
+	exit()
 	
 	draw_sum_of_chi_cdf([0, 1])
 	exit()
