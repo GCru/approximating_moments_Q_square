@@ -15,8 +15,8 @@ taylor_4 = taylor_3+(3/48)*x0**(-5/2)*(x-x0)**3
 taylor_5 = taylor_4-(15/(16*24))*x0**(-7/2)*(x-x0)**4
 taylor_6 = taylor_5+ (105/(32*120))*x0**(-9/2)*(x-x0)**5
 
-p_left = figure(width=400, height=350, title="", tools="",
-           toolbar_location=None)
+p_left = figure(width=400, height=350, title="",) #, tools="",)
+          # toolbar_location=None)
 p_left.x_range=Range1d(0,4)
 p_left.y_range=Range1d(0,3.2)
 

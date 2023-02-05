@@ -23,6 +23,8 @@ from fundskill_utilities.fundskill_shared_bokeh_utilities import setup_date_tick
 from bokeh_constants import *"""
 
 
+
+
 def draw_sum_of_chi_cdf(w):
 	
 	grain = 100
@@ -30,6 +32,9 @@ def draw_sum_of_chi_cdf(w):
 	plot0 = figure(plot_width=int(500), plot_height=500)
 	
 	
+	
+	# Maximum
+	####################################################
 	
 	w = [0.01 / 3, 0.01 / 3, 0.01 / 3, 0.999]
 	# w=[0.01,0.01,0.01,0.97]
@@ -46,25 +51,48 @@ def draw_sum_of_chi_cdf(w):
 	
 	y_axis = [chi2.cdf(item, 1, scale=1 / 1) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2, line_color="black")
+
+	
 	#show(plot0)
 	#exit()
 	
-	w = [0.106, 0.106, 0.106, 0.682]
-	w = [0.25, 0.25, 0.25, 0.25]
-	# w=[0.02,0.02,0.01,0.95]
+	# Inbetween
+	
+
+	w=[0.60,0.1,0.1,0.1,0.1]
+	print("dot", numpy.dot(w,w), 2/9)
+	print('*****', hbe(coeff=w, x=1))
+	
+	# w=[0.499,0.001,0.499,0.001]
+	print(sum(w))
+	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
+	
+	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
+	plot0.line(x_axis, y_axis, line_width=2, line_color="green")
+	
+	
+	
+	
+	# Minimum
+	##########################################################
+
+	w = [0.2, 0.2, 0.2, 0.2, 0.2]
+
 	print(sum(w))
 	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
 	
 	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2, line_color="red")
 	
-	y_axis = [chi2.cdf(item,100,scale=1/100) for item in x_axis]
-	plot0.line(x_axis, y_axis, line_width=2, line_color="black")
+	y_axis = [chi2.cdf(item,5,scale=1/5) for item in x_axis]
+	plot0.line(x_axis, y_axis, line_width=2, line_color="red")
 	
 	
 	show(plot0)
 	
 	return
+
+
 
 
 def draw_function():
@@ -88,8 +116,8 @@ def draw_function():
 	return
 
 if __name__ == '__main__':
-	draw_function()
-	exit()
+	#draw_function()
+	#exit()
 	
 	draw_sum_of_chi_cdf([0, 1])
 	exit()
