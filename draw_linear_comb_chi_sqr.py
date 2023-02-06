@@ -6,7 +6,7 @@ from scipy.stats import kstest, kurtosis, skew, skewtest, jarque_bera, wasserste
 from scipy.special import erf
 from scipy import optimize
 
-from momentchi2 import hbe
+from momentchi2 import hbe, lpb4
 
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import Range1d, PrintfTickFormatter, NumeralTickFormatter, Title
@@ -23,6 +23,30 @@ from fundskill_utilities.fundskill_shared_bokeh_utilities import setup_date_tick
 from bokeh_constants import *"""
 
 
+def a_h(w):
+
+	n=len(w)
+	sum=numpy.sum(numpy.multiply(numpy.multiply(w,w),w))
+	
+	sum = sum/ (numpy.dot(w,w)*n)
+	
+	print('a_h',sum)
+	
+	return sum
+
+def n_h(w):
+	
+	d=numpy.sum(numpy.multiply(numpy.multiply(w,w),w))
+	sum = numpy.dot(w,w)**3
+	sum=sum/ d**2
+	
+	print('n_h', sum)
+	return sum
+
+def beta_h(w):
+	
+	
+	return n_h(w) - (2*n_h(w)-1)**0.5
 
 
 def draw_sum_of_chi_cdf(w):
@@ -40,6 +64,10 @@ def draw_sum_of_chi_cdf(w):
 	# w=[0.01,0.01,0.01,0.97]
 	# w=[0.2,0.2,0.2,0.2,0.2]
 	# w=[0.40,0.2,0.3,0.1]
+	
+	mu_q = numpy.sum(w) /len(w)
+	
+	print('PPPPPPPPPPPPPP', -(mu_q/a_h(w))+beta_h(w))
 	print('*****', hbe(coeff=w, x=1))
 	
 	# w=[0.499,0.001,0.499,0.001]
@@ -60,14 +88,18 @@ def draw_sum_of_chi_cdf(w):
 	
 
 	w=[0.60,0.1,0.1,0.1,0.1]
-	print("dot", numpy.dot(w,w), 2/9)
+	
+	mu_q = numpy.sum(w) / len(w)
+	
+	print('PPPPPPPPPPPPPP', -(mu_q / a_h(w)) + beta_h(w))
+	print("dot", numpy.sum(w)**2/numpy.dot(w,w), 2/9)
 	print('*****', hbe(coeff=w, x=1))
 	
 	# w=[0.499,0.001,0.499,0.001]
 	print(sum(w))
 	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
 	
-	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
+	y_axis = [lpb4(coeff=w, x=item) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2, line_color="green")
 	
 	
@@ -77,6 +109,10 @@ def draw_sum_of_chi_cdf(w):
 	##########################################################
 
 	w = [0.2, 0.2, 0.2, 0.2, 0.2]
+	
+	mu_q = numpy.sum(w) / len(w)
+	
+	print('PPPPPPPPPPPPPP', -(mu_q / a_h(w)) + beta_h(w))
 
 	print(sum(w))
 	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
