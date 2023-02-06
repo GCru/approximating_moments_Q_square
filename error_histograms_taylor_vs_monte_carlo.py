@@ -4,7 +4,7 @@ from drs import drs
 
 
 
-def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=1000):
+def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=2000):
 	
 	n = len(eigenvalues)
 	
@@ -109,6 +109,8 @@ if __name__ == '__main__':
 	mean_taylor2_errors =[]
 	var_taylor2_errors = []
 	var_taylor3_errors = []
+	
+	sum_monte_carlo_variance =0
 	for counter in range(100):
 		n = 10
 		eigenvalues = drs(n,1)
@@ -116,11 +118,11 @@ if __name__ == '__main__':
 	
 		#n=2
 		#eigenvalues=[1,0,0,0,0,0,0,0,0,0]
-		eigenvalues=[0.4, 0.4/9, 0.4/9, 0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9]
+		#eigenvalues=[0.4, 0.4/9, 0.4/9, 0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9]
 		#eigenvalues=[0.4, 0.4, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8,]
 		eigenvalues=[0.1, 0.1, 0.1, 0.1,0.1,0.1,0.1,0.1,0.1,0.1]
 		mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(eigenvalues)
-		print('Monte carlo mean', mean_lin_comb_chi_monte_carlo)
+		print('Monte carlo mean', mean_lin_comb_chi_monte_carlo, 'expec6ted mean', 0.1*(1-1/40))
 		
 		mean_sqrt_taylor1 = calculate_cumulant(1, eigenvalues) ** 0.5
 		print(mean_sqrt_taylor1)
@@ -136,6 +138,7 @@ if __name__ == '__main__':
 		
 		
 		print('Monte carlo variance: ', var_lin_comb_chi_monte_carlo)
+		sum_monte_carlo_variance =sum_monte_carlo_variance+ var_lin_comb_chi_monte_carlo
 		
 		var_sqrt_taylor_2 = calculate_taylor_2_var_sqrt(eigenvalues)
 		print('Taylor 2 variance: ', var_sqrt_taylor_2)
@@ -148,6 +151,7 @@ if __name__ == '__main__':
 		print('Var Taylor 3  error: ',
 			  var_taylor3_errors[-1], '%')
 	print()
+	print(sum_monte_carlo_variance/100)
 	print('Final result')
 	print('mean taylor 1 errors: ',numpy.mean(mean_taylor1_errors), numpy.std(mean_taylor1_errors), numpy.min(mean_taylor1_errors),
 		  numpy.max(mean_taylor1_errors))
@@ -158,3 +162,4 @@ if __name__ == '__main__':
 		  numpy.min(var_taylor2_errors), numpy.max(var_taylor2_errors))
 	print('var taylor 3 errors: ', numpy.mean(var_taylor3_errors), numpy.std(var_taylor3_errors),
 		  numpy.min(var_taylor3_errors), numpy.max(var_taylor3_errors))
+	
