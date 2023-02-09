@@ -7,6 +7,7 @@ from scipy.special import erf
 from scipy import optimize
 
 from momentchi2 import hbe, lpb4,sw,wf
+from drs import drs
 
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import Range1d, PrintfTickFormatter, NumeralTickFormatter, Title
@@ -61,19 +62,15 @@ def draw_sum_of_chi_cdf(w):
 	####################################################
 	
 	w = [0.001 / 4, 0.001 / 4, 0.001 / 4, 0.001/4, 0.999]
-	# w=[0.01,0.01,0.01,0.97]
-	# w=[0.2,0.2,0.2,0.2,0.2]
-	# w=[0.40,0.2,0.3,0.1]
 	
-	mu_q = numpy.sum(w) /len(w)
 	
 	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
 	
-	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
-	plot0.line(x_axis, y_axis, line_width=2)
+	y_axis = [lpb4(coeff=w, x=item) for item in x_axis]
+	plot0.line(x_axis, y_axis, line_width=1)
 	
 	y_axis = [chi2.cdf(item, 1, scale=1 / 1) for item in x_axis]
-	plot0.line(x_axis, y_axis, line_width=2, line_color="black")
+	#plot0.line(x_axis, y_axis, line_width=2, line_color="black")
 
 	
 	#show(plot0)
@@ -82,14 +79,15 @@ def draw_sum_of_chi_cdf(w):
 	# Inbetween
 	
 
-	w=[0.60,0.1,0.1,0.1,0.1]
+	w=[0.7,0.1,0.1,0.1] #,0.1,0.1]
 	
-	mu_q = numpy.sum(w) / len(w)
+	for idx in range(10):
+		w = drs(4, 1)
 	
-	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
+		x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
 	
-	y_axis = [lpb4(coeff=w, x=item) for item in x_axis]
-	plot0.line(x_axis, y_axis, line_width=2, line_color="green")
+		y_axis = [lpb4(coeff=w, x=item) for item in x_axis]
+		plot0.line(x_axis, y_axis, line_width=1, line_color="black", line_dash='dashed')
 	
 	
 	
@@ -97,20 +95,15 @@ def draw_sum_of_chi_cdf(w):
 	# Minimum
 	##########################################################
 
-	w = [0.2, 0.2, 0.2, 0.2, 0.2]
+	w = [0.25, 0.25, 0.24, 0.26]
 	
-	mu_q = numpy.sum(w) / len(w)
-	
-	print('PPPPPPPPPPPPPP', -(mu_q / a_h(w)) + beta_h(w))
-
-	print(sum(w))
 	x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
 	
-	y_axis = [hbe(coeff=w, x=item) for item in x_axis]
+	y_axis = [lpb4(coeff=w, x=item) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2, line_color="red")
 	
 	y_axis = [chi2.cdf(item,5,scale=1/5) for item in x_axis]
-	plot0.line(x_axis, y_axis, line_width=2, line_color="red")
+	#plot0.line(x_axis, y_axis, line_width=2, line_color="red")
 	
 	
 	show(plot0)
