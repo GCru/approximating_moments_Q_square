@@ -10,9 +10,7 @@ from scipy import optimize
 from momentchi2 import hbe
 
 if __name__ == '__main__':
-	arr = numpy.array([10, 1, 2, 5, 6, 2, 3, 8])
-	arr=arr[arr<6]
-	print(arr)
+	
 
 	
 	c = 1
@@ -22,10 +20,10 @@ if __name__ == '__main__':
 	
 	print('gamma', gamma.cdf(x=10, a=n / 2, scale=2 * c))
 	
-	w_max = numpy.array([0.0, 0.0, 0.0, 0.0 , 1.0])
-	w_min = numpy.array([0.2,0.2,0.2,0.2,0.2])
+	w_max = numpy.array([0.0, 0.0, 1.0])
+	w_min = numpy.array([1/3, 1/3, 1/3])
 	
-	w_inbetween = numpy.array([0.60, 0.1, 0.1, 0.1, 0.1])
+	w_inbetween = numpy.array([0.60, 0.2, 0.2 ])
 
 	size = 10000
 	result_min = numpy.empty(size)
@@ -33,7 +31,7 @@ if __name__ == '__main__':
 	result_inbetween = numpy.empty(size)
 	
 	for idx in range(size):
-		chi_square_list = numpy.random.chisquare(df=1,size=5)
+		chi_square_list = numpy.random.chisquare(df=1,size=3)
 		
 		result_min[idx] = numpy.dot(w_min,chi_square_list)
 		result_max[idx] = numpy.dot(w_max, chi_square_list)
@@ -41,9 +39,9 @@ if __name__ == '__main__':
 	
 		
 	
-	result_min =result_min[result_min<0.1]
-	result_max = result_max[result_max < 0.1]
-	result_inbetween = result_inbetween[result_inbetween < 0.1]
+	result_min =result_min[result_min<0.05]
+	result_max = result_max[result_max < 0.05]
+	result_inbetween = result_inbetween[result_inbetween < 0.05]
 	
 	print('Density', 100* len(result_min)/size, 100*len(result_inbetween)/size, 100*len(result_max)/size)
 	

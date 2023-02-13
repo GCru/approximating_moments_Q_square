@@ -4,7 +4,7 @@ from drs import drs
 
 
 
-def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=2000):
+def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=10000):
 	
 	n = len(eigenvalues)
 	
@@ -111,16 +111,23 @@ if __name__ == '__main__':
 	var_taylor3_errors = []
 	
 	sum_monte_carlo_variance =0
-	for counter in range(100):
-		n = 10
+	for counter in range(50):
+		n = 3
 		eigenvalues = drs(n,1)
+		#eigenvalues=[0.1,0.9]
+		print()
+		print(eigenvalues)
+		#n=3
+		#eigenvalues=eigenvalues+[0]
 		#print(eigenvalues)
 	
 		#n=2
+		#eigenvalues=[0.5,0.5]
 		#eigenvalues=[1,0,0,0,0,0,0,0,0,0]
 		#eigenvalues=[0.4, 0.4/9, 0.4/9, 0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9]
-		#eigenvalues=[0.4, 0.4, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8, 0.2/8,]
-		eigenvalues=[0.1, 0.1, 0.1, 0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+		#eigenvalues=[0.44, 0.44, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8,]
+		#eigenvalues=[0.1, 0.1, 0.1, 0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+		#eigenvalues = [0.1]*10
 		mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(eigenvalues)
 		print('Monte carlo mean', mean_lin_comb_chi_monte_carlo, 'expec6ted mean', 0.1**0.5*(1-1/40))
 		print('Monte carlo var', var_lin_comb_chi_monte_carlo, 'expec6ted var', 0.1  * (1/20))
@@ -154,9 +161,9 @@ if __name__ == '__main__':
 	print()
 	print(sum_monte_carlo_variance/100)
 	print('Final result')
-	print('mean taylor 1 errors: ',numpy.mean(mean_taylor1_errors), numpy.std(mean_taylor1_errors), numpy.min(mean_taylor1_errors),
+	print('mean taylor 2 errors: ',numpy.mean(mean_taylor1_errors), numpy.std(mean_taylor1_errors), numpy.min(mean_taylor1_errors),
 		  numpy.max(mean_taylor1_errors))
-	print('mean taylor 2 errors: ', numpy.mean(mean_taylor2_errors), numpy.std(mean_taylor2_errors),
+	print('mean taylor 3 errors: ', numpy.mean(mean_taylor2_errors), numpy.std(mean_taylor2_errors),
 		  numpy.min(mean_taylor2_errors),
 		  numpy.max(mean_taylor2_errors))
 	print('var taylor 2 errors: ', numpy.mean(var_taylor2_errors), numpy.std(var_taylor2_errors),
