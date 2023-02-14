@@ -179,27 +179,39 @@ if __name__ == '__main__':
 		else:
 			largest_var_taylor_3_error = numpy.min(var_taylor_3_errors)
 		
+		answer = mu_Q**0.5
+		mean_two_term_extreme_error = 100* (answer-mean_extreme)/mean_extreme
 		
-		mean_two_term_extreme_error= 100* ((1-1/(4*n))-mean_extreme)/mean_extreme
+		answer = (1 - 1/(4*n))*mu_Q**0.5
+		mean_three_term_extreme_error= 100* (answer-mean_extreme)/mean_extreme
+		
+		answer = mu_Q /(2*n)
+		var_two_term_extreme_error = 100* (answer-var_extreme)/var_extreme
+		
+		answer = (mu_Q /n) * (1/2 - 7/(8*n) + 3/(4*n**2))
+		var_three_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
+		
 			
 		dict_item= {'n' : n,
-					'mean_extreme_error': mean_extreme_error,
 					'mean_mean_taylor_2_errors': numpy.mean(mean_taylor_2_errors),
+					'mean_two_term_extreme_error': mean_two_term_extreme_error,
 				   	'largest_mean_taylor_2_error': largest_mean_taylor_2_error,
 					'mean_mean_taylor_3_errors': numpy.mean(mean_taylor_3_errors),
+					'mean_three_term_extreme_error': mean_three_term_extreme_error,
 				    'largest_mean_taylor_3_error': largest_mean_taylor_3_error,
-					'var_extreme_error': var_extreme_error,
 					'mean_var_taylor_2_errors': numpy.mean(var_taylor_2_errors),
+					'var_two_term_extreme_error': var_two_term_extreme_error,
 					'largest_var_taylor_2_error': largest_var_taylor_2_error,
 					'mean_var_taylor_3_errors': numpy.mean(var_taylor_3_errors),
+					'var_three_term_extreme_error': var_three_term_extreme_error,
 					'largest_var_taylor_3_error': largest_var_taylor_3_error}
 		
 		results_list.append(dict_item)
 	
-	field_names = ['n', 'mean_extreme_error', 'mean_mean_taylor_2_errors', 'largest_mean_taylor_2_error',
-					'mean_mean_taylor_3_errors', 'largest_mean_taylor_3_error',
-				   'var_extreme_error', 'mean_var_taylor_2_errors', 'largest_var_taylor_2_error',
-				   'mean_var_taylor_3_errors', 'largest_var_taylor_3_error']
+	field_names = ['n',  'mean_mean_taylor_2_errors', 'mean_two_term_extreme_error','largest_mean_taylor_2_error',
+					'mean_mean_taylor_3_errors','mean_three_term_extreme_error', 'largest_mean_taylor_3_error',
+				    'mean_var_taylor_2_errors', 'var_two_term_extreme_error', 'largest_var_taylor_2_error',
+				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'largest_var_taylor_3_error']
 	
 	with open('taylor_errors.csv', 'w',) as csvfile:
 		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator = '\n')
