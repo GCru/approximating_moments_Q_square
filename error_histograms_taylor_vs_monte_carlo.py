@@ -87,7 +87,7 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	for idx in range(3):
+	for idx in range(10):
 		n = idx+1
 		mu_Q = eigenvalue_sum/n
 		mean_extreme = ((2*mu_Q/n)**0.5)*math.gamma((n+1)/2)/math.gamma(n/2)
@@ -104,7 +104,7 @@ if __name__ == '__main__':
 		var_taylor_2_errors = []
 		var_taylor_3_errors = []
 		
-		for counter in range(10):
+		for counter in range(100):
 			
 			eigenvalues = drs(n, eigenvalue_sum)
 			#eigenvalues=[0.1,0.9]
