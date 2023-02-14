@@ -104,7 +104,7 @@ if __name__ == '__main__':
 		var_taylor_2_errors = []
 		var_taylor_3_errors = []
 		
-		for counter in range(100):
+		for counter in range(1000):
 			
 			eigenvalues = drs(n, eigenvalue_sum)
 			#eigenvalues=[0.1,0.9]
