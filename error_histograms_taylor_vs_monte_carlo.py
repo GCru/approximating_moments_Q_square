@@ -90,14 +90,14 @@ if __name__ == '__main__':
 	for idx in range(3):
 		n = idx+1
 		mu_Q = eigenvalue_sum/n
-		mean_extreme_error = ((2*mu_Q/n)**0.5)*math.gamma((n+1)/2)/math.gamma(n/2)
-		print(mean_extreme_error, mean_extreme_error/mu_Q**0.5)
+		mean_extreme = ((2*mu_Q/n)**0.5)*math.gamma((n+1)/2)/math.gamma(n/2)
+		print(mean_extreme, mean_extreme/mu_Q**0.5)
 		#exit()
-		var_extreme_error =  (2**0.5 * math.gamma((n+1)/2)/math.gamma(n/2))**2
+		var_extreme =  (2**0.5 * math.gamma((n+1)/2)/math.gamma(n/2))**2
 		
-		var_extreme_error = mu_Q * (1 - var_extreme_error/n)
+		var_extreme = mu_Q * (1 - var_extreme/n)
 		
-		print(var_extreme_error, var_extreme_error/mu_Q)
+		print(var_extreme, var_extreme/mu_Q)
 		
 		mean_taylor_2_errors = []
 		mean_taylor_3_errors = []
@@ -178,7 +178,9 @@ if __name__ == '__main__':
 			largest_var_taylor_3_error = numpy.max(var_taylor_3_errors)
 		else:
 			largest_var_taylor_3_error = numpy.min(var_taylor_3_errors)
-			
+		
+		
+		mean_two_term_extreme_error= 100* ((1-1/(4*n))-mean_extreme)/mean_extreme
 			
 		dict_item= {'n' : n,
 					'mean_extreme_error': mean_extreme_error,
