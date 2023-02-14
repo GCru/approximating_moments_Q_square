@@ -1,4 +1,5 @@
 import numpy, math
+import csv
 
 from drs import drs
 
@@ -85,74 +86,102 @@ if __name__ == '__main__':
 	mean_taylor_3_errors =[]
 	var_taylor_2_errors = []
 	var_taylor_3_errors = []
+	results_list=[]
 	
 	sum_monte_carlo_variance =0
 	
 	eigenvalue_sum = 1
 	
-	n = 2
-	mu_Q = eigenvalue_sum/n
-	mean_extreme_error = ((2*mu_Q/n)**0.5)*math.gamma((n+1)/2)/math.gamma(n/2)
-	print(mean_extreme_error, mean_extreme_error/mu_Q**0.5)
-	#exit()
-	var_extreme_error =  (2**0.5 * math.gamma((n+1)/2)/math.gamma(n/2))**2
 	
-	var_extreme_error = mu_Q * (1 - var_extreme_error/n)
-	
-	print(var_extreme_error, var_extreme_error/mu_Q)
-	
-	for counter in range(50):
+	for idx in range(3):
+		n = idx+1
+		mu_Q = eigenvalue_sum/n
+		mean_extreme_error = ((2*mu_Q/n)**0.5)*math.gamma((n+1)/2)/math.gamma(n/2)
+		print(mean_extreme_error, mean_extreme_error/mu_Q**0.5)
+		#exit()
+		var_extreme_error =  (2**0.5 * math.gamma((n+1)/2)/math.gamma(n/2))**2
 		
-		eigenvalues = drs(n, eigenvalue_sum)
-		#eigenvalues=[0.1,0.9]
+		var_extreme_error = mu_Q * (1 - var_extreme_error/n)
+		
+		print(var_extreme_error, var_extreme_error/mu_Q)
+		
+		for counter in range(10):
+			
+			eigenvalues = drs(n, eigenvalue_sum)
+			#eigenvalues=[0.1,0.9]
+			print()
+			print(eigenvalues)
+			#n=3
+			#eigenvalues=eigenvalues+[0]
+			#print(eigenvalues)
+		
+			#n=2
+			#eigenvalues=[1/3,1/3,1/3]
+			#eigenvalues=[0.5, 0.5]
+			#eigenvalues=[1,0,0,0,0,0,0,0,0,0]
+			#eigenvalues=[0.4, 0.4/9, 0.4/9, 0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9]
+			#eigenvalues=[0.44, 0.44, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8,]
+			#eigenvalues=[0.1, 0.1, 0.1, 0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+			#eigenvalues = [0.1]*10
+			mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(eigenvalues)
+			print('Monte carlo mean', mean_lin_comb_chi_monte_carlo, 'expec6ted mean', 0.1**0.5*(1-1/40))
+			print('Monte carlo var', var_lin_comb_chi_monte_carlo, 'expec6ted var', 0.1  * (1/20))
+			exit()
+			mean_sqrt_taylor_2 = calculate_cumulant(1, eigenvalues) ** 0.5
+			mean_taylor_2_errors.append(100 * (mean_sqrt_taylor_2 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
+			print('Mean taylor 2 error: ', mean_taylor_2_errors[-1], '%')
+			
+			mean_sqrt_taylor_3 = calculate_taylor_3_mean_sqrt(eigenvalues)
+			mean_taylor_3_errors.append(100* (mean_sqrt_taylor_3-mean_lin_comb_chi_monte_carlo)/mean_lin_comb_chi_monte_carlo)
+			print('Mean taylor 3 error: ',mean_taylor_3_errors[-1], '%' )
+			
+			
+			sum_monte_carlo_variance =sum_monte_carlo_variance+ var_lin_comb_chi_monte_carlo
+			
+			var_sqrt_taylor_2 = calculate_taylor_2_var_sqrt(eigenvalues)
+			#print('Var Taylor 2: ', var_sqrt_taylor_2)
+			var_taylor_2_errors.append(100 * (var_sqrt_taylor_2 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
+			print('Var Taylor 2 error: ',var_taylor_2_errors[-1], '%')
+			
+			var_sqrt_taylor_3 = calculate_taylor_3_var_sqrt(eigenvalues)
+			#print('Taylor 3 variance: ', var_sqrt_taylor_3)
+			var_taylor_3_errors.append(100 * (var_sqrt_taylor_3 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
+			print('Var Taylor 3  error: ',  var_taylor_3_errors[-1], '%')
 		print()
-		print(eigenvalues)
-		#n=3
-		#eigenvalues=eigenvalues+[0]
-		#print(eigenvalues)
+		print(sum_monte_carlo_variance/100)
+		print('Final result')
+		print('Mean taylor 2 errors: ',numpy.mean(mean_taylor_2_errors), numpy.std(mean_taylor_2_errors), numpy.min(mean_taylor_2_errors),
+			  numpy.max(mean_taylor_2_errors))
+		print('Mean taylor 3 errors: ', numpy.mean(mean_taylor_3_errors), numpy.std(mean_taylor_3_errors),
+			  numpy.min(mean_taylor_3_errors),
+			  numpy.max(mean_taylor_3_errors))
+		print('Var taylor 2 errors: ', numpy.mean(var_taylor_2_errors), numpy.std(var_taylor_2_errors),
+			  numpy.min(var_taylor_2_errors), numpy.max(var_taylor_2_errors))
+		print('Var taylor 3 errors: ', numpy.mean(var_taylor_3_errors), numpy.std(var_taylor_3_errors),
+			  numpy.min(var_taylor_3_errors), numpy.max(var_taylor_3_errors))
 	
-		#n=2
-		eigenvalues=[1/3,1/3,1/3]
-		eigenvalues=[0.5, 0.5]
-		#eigenvalues=[1,0,0,0,0,0,0,0,0,0]
-		#eigenvalues=[0.4, 0.4/9, 0.4/9, 0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9]
-		#eigenvalues=[0.44, 0.44, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8,]
-		#eigenvalues=[0.1, 0.1, 0.1, 0.1,0.1,0.1,0.1,0.1,0.1,0.1]
-		#eigenvalues = [0.1]*10
-		mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(eigenvalues)
-		print('Monte carlo mean', mean_lin_comb_chi_monte_carlo, 'expec6ted mean', 0.1**0.5*(1-1/40))
-		print('Monte carlo var', var_lin_comb_chi_monte_carlo, 'expec6ted var', 0.1  * (1/20))
-		exit()
-		mean_sqrt_taylor_2 = calculate_cumulant(1, eigenvalues) ** 0.5
-		mean_taylor_2_errors.append(100 * (mean_sqrt_taylor_2 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
-		print('Mean taylor 2 error: ', mean_taylor_2_errors[-1], '%')
-		
-		mean_sqrt_taylor_3 = calculate_taylor_3_mean_sqrt(eigenvalues)
-		mean_taylor_3_errors.append(100* (mean_sqrt_taylor_3-mean_lin_comb_chi_monte_carlo)/mean_lin_comb_chi_monte_carlo)
-		print('Mean taylor 3 error: ',mean_taylor_3_errors[-1], '%' )
 		
 		
-		sum_monte_carlo_variance =sum_monte_carlo_variance+ var_lin_comb_chi_monte_carlo
+		dict_item= {'n' : n,
+					'mean_extreme_error': mean_extreme_error,
+					'mean_mean_taylor_2_errors': numpy.mean(mean_taylor_2_errors),
+				   	'max_mean_taylor_2_errors': numpy.max(mean_taylor_2_errors),
+					'mean_mean_taylor_3_errors': numpy.mean(mean_taylor_3_errors),
+				    'max_mean_taylor_3_errors': numpy.max(mean_taylor_3_errors),
+					'var_extreme_error': var_extreme_error,
+					'mean_var_taylor_2_errors': numpy.mean(var_taylor_2_errors),
+					'max_var_taylor_2_errors': numpy.max(var_taylor_2_errors) ,
+					'mean_var_taylor_3_errors': numpy.mean(var_taylor_3_errors),
+					'max_var_taylor_3_errors': numpy.max(var_taylor_3_errors)}
 		
-		var_sqrt_taylor_2 = calculate_taylor_2_var_sqrt(eigenvalues)
-		#print('Var Taylor 2: ', var_sqrt_taylor_2)
-		var_taylor_2_errors.append(100 * (var_sqrt_taylor_2 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
-		print('Var Taylor 2 error: ',var_taylor_2_errors[-1], '%')
-		
-		var_sqrt_taylor_3 = calculate_taylor_3_var_sqrt(eigenvalues)
-		#print('Taylor 3 variance: ', var_sqrt_taylor_3)
-		var_taylor_3_errors.append(100 * (var_sqrt_taylor_3 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
-		print('Var Taylor 3  error: ',  var_taylor_3_errors[-1], '%')
-	print()
-	print(sum_monte_carlo_variance/100)
-	print('Final result')
-	print('Mean taylor 2 errors: ',numpy.mean(mean_taylor_2_errors), numpy.std(mean_taylor_2_errors), numpy.min(mean_taylor_2_errors),
-		  numpy.max(mean_taylor_2_errors))
-	print('Mean taylor 3 errors: ', numpy.mean(mean_taylor_3_errors), numpy.std(mean_taylor_3_errors),
-		  numpy.min(mean_taylor_3_errors),
-		  numpy.max(mean_taylor_3_errors))
-	print('Var taylor 2 errors: ', numpy.mean(var_taylor_2_errors), numpy.std(var_taylor_2_errors),
-		  numpy.min(var_taylor_2_errors), numpy.max(var_taylor_2_errors))
-	print('Var taylor 3 errors: ', numpy.mean(var_taylor_3_errors), numpy.std(var_taylor_3_errors),
-		  numpy.min(var_taylor_3_errors), numpy.max(var_taylor_3_errors))
+		results_list.append(dict_item)
 	
+	field_names = ['n', 'mean_extreme_error', 'mean_mean_taylor_2_errors', 'max_mean_taylor_2_errors',
+				   'mean_mean_taylor_3_errors', 'max_mean_taylor_3_errors',
+				   'var_extreme_error', 'mean_var_taylor_2_errors', 'max_var_taylor_2_errors',
+				   'mean_var_taylor_3_errors', 'max_var_taylor_3_errors']
+	
+	with open('Names.csv', 'w') as csvfile:
+		writer = csv.DictWriter(csvfile, fieldnames=field_names)
+		writer.writeheader()
+		writer.writerows(results_list)
