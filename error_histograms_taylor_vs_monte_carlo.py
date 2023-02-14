@@ -81,17 +81,11 @@ def calculate_taylor_3_var_sqrt(eigenvalues):
 if __name__ == '__main__':
 	
 	
-	
-	mean_taylor_2_errors = []
-	mean_taylor_3_errors =[]
-	var_taylor_2_errors = []
-	var_taylor_3_errors = []
 	results_list=[]
 	
 	sum_monte_carlo_variance =0
 	
 	eigenvalue_sum = 1
-	
 	
 	for idx in range(3):
 		n = idx+1
@@ -104,6 +98,11 @@ if __name__ == '__main__':
 		var_extreme_error = mu_Q * (1 - var_extreme_error/n)
 		
 		print(var_extreme_error, var_extreme_error/mu_Q)
+		
+		mean_taylor_2_errors = []
+		mean_taylor_3_errors = []
+		var_taylor_2_errors = []
+		var_taylor_3_errors = []
 		
 		for counter in range(10):
 			
@@ -126,7 +125,7 @@ if __name__ == '__main__':
 			mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(eigenvalues)
 			print('Monte carlo mean', mean_lin_comb_chi_monte_carlo, 'expec6ted mean', 0.1**0.5*(1-1/40))
 			print('Monte carlo var', var_lin_comb_chi_monte_carlo, 'expec6ted var', 0.1  * (1/20))
-			exit()
+		
 			mean_sqrt_taylor_2 = calculate_cumulant(1, eigenvalues) ** 0.5
 			mean_taylor_2_errors.append(100 * (mean_sqrt_taylor_2 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
 			print('Mean taylor 2 error: ', mean_taylor_2_errors[-1], '%')
@@ -160,28 +159,47 @@ if __name__ == '__main__':
 		print('Var taylor 3 errors: ', numpy.mean(var_taylor_3_errors), numpy.std(var_taylor_3_errors),
 			  numpy.min(var_taylor_3_errors), numpy.max(var_taylor_3_errors))
 	
-		
-		
+		if abs(numpy.max(mean_taylor_2_errors)) > abs(numpy.min(mean_taylor_2_errors)):
+			largest_mean_taylor_2_error = numpy.max(mean_taylor_2_errors)
+		else:
+			largest_mean_taylor_2_error = numpy.min(mean_taylor_2_errors)
+			
+		if abs(numpy.max(mean_taylor_3_errors)) > abs(numpy.min(mean_taylor_3_errors)):
+			largest_mean_taylor_3_error = numpy.max(mean_taylor_3_errors)
+		else:
+			largest_mean_taylor_3_error = numpy.min(mean_taylor_3_errors)
+			
+		if abs(numpy.max(var_taylor_2_errors)) > abs(numpy.min(var_taylor_2_errors)):
+			largest_var_taylor_2_error = numpy.max(var_taylor_2_errors)
+		else:
+			largest_var_taylor_2_error = numpy.min(var_taylor_2_errors)
+			
+		if abs(numpy.max(var_taylor_3_errors)) > abs(numpy.min(var_taylor_3_errors)):
+			largest_var_taylor_3_error = numpy.max(var_taylor_3_errors)
+		else:
+			largest_var_taylor_3_error = numpy.min(var_taylor_3_errors)
+			
+			
 		dict_item= {'n' : n,
 					'mean_extreme_error': mean_extreme_error,
 					'mean_mean_taylor_2_errors': numpy.mean(mean_taylor_2_errors),
-				   	'max_mean_taylor_2_errors': numpy.max(mean_taylor_2_errors),
+				   	'largest_mean_taylor_2_error': largest_mean_taylor_2_error,
 					'mean_mean_taylor_3_errors': numpy.mean(mean_taylor_3_errors),
-				    'max_mean_taylor_3_errors': numpy.max(mean_taylor_3_errors),
+				    'largest_mean_taylor_3_error': largest_mean_taylor_3_error,
 					'var_extreme_error': var_extreme_error,
 					'mean_var_taylor_2_errors': numpy.mean(var_taylor_2_errors),
-					'max_var_taylor_2_errors': numpy.max(var_taylor_2_errors) ,
+					'largest_var_taylor_2_error': largest_var_taylor_2_error,
 					'mean_var_taylor_3_errors': numpy.mean(var_taylor_3_errors),
-					'max_var_taylor_3_errors': numpy.max(var_taylor_3_errors)}
+					'largest_var_taylor_3_error': largest_var_taylor_3_error}
 		
 		results_list.append(dict_item)
 	
-	field_names = ['n', 'mean_extreme_error', 'mean_mean_taylor_2_errors', 'max_mean_taylor_2_errors',
-				   'mean_mean_taylor_3_errors', 'max_mean_taylor_3_errors',
-				   'var_extreme_error', 'mean_var_taylor_2_errors', 'max_var_taylor_2_errors',
-				   'mean_var_taylor_3_errors', 'max_var_taylor_3_errors']
+	field_names = ['n', 'mean_extreme_error', 'mean_mean_taylor_2_errors', 'largest_mean_taylor_2_error',
+					'mean_mean_taylor_3_errors', 'largest_mean_taylor_3_error',
+				   'var_extreme_error', 'mean_var_taylor_2_errors', 'largest_var_taylor_2_error',
+				   'mean_var_taylor_3_errors', 'largest_var_taylor_3_error']
 	
-	with open('Names.csv', 'w') as csvfile:
-		writer = csv.DictWriter(csvfile, fieldnames=field_names)
+	with open('taylor_errors.csv', 'w',) as csvfile:
+		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator = '\n')
 		writer.writeheader()
 		writer.writerows(results_list)
