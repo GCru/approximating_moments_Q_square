@@ -4,7 +4,7 @@ import csv
 from drs import drs
 
 
-def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=10000):
+def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=100000):
 	
 	n = len(eigenvalues)
 	
@@ -49,6 +49,8 @@ def calculate_taylor_2_var_sqrt(eigenvalues):
 	
 	var_sqrt_wVw_taylor_2 = calculate_cumulant(2, eigenvalues) / (4*calculate_cumulant(1, eigenvalues))
 	
+	#print(var_sqrt_wVw_taylor_2)
+	#input('aha')
 	return var_sqrt_wVw_taylor_2
 
 
@@ -87,7 +89,8 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	for idx in range(10):
+	for idx in range(3,4):
+		
 		n = idx+1
 		mu_Q = eigenvalue_sum/n
 		mean_extreme = ((2*mu_Q/n)**0.5)*math.gamma((n+1)/2)/math.gamma(n/2)
@@ -104,7 +107,9 @@ if __name__ == '__main__':
 		var_taylor_2_errors = []
 		var_taylor_3_errors = []
 		
-		for counter in range(1000):
+		for counter in range(10000):
+			
+			print(counter)
 			
 			eigenvalues = drs(n, eigenvalue_sum)
 			#eigenvalues=[0.1,0.9]
@@ -213,7 +218,7 @@ if __name__ == '__main__':
 				    'mean_var_taylor_2_errors', 'var_two_term_extreme_error', 'largest_var_taylor_2_error',
 				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'largest_var_taylor_3_error']
 	
-	with open('taylor_errors.csv', 'w',) as csvfile:
+	with open('taylor_errors_4.csv', 'w',) as csvfile:
 		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator = '\n')
 		writer.writeheader()
 		writer.writerows(results_list)
