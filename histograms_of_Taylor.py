@@ -39,7 +39,7 @@ def draw_error_histogram(error_list, my_title='S\&P 500'):
 					 text_line_height=1, vertical_align='middle')
 	plot.add_layout(the_title, "above")
 	
-	plot.x_range = Range1d(0.0, right_edges[-1])
+	plot.x_range = Range1d(left_edges[0], right_edges[-1])
 	plot.xaxis.axis_label = ' '
 	plot.xaxis[0].formatter = NumeralTickFormatter(format="0,0")
 	plot.min_border_right = 20
@@ -47,7 +47,7 @@ def draw_error_histogram(error_list, my_title='S\&P 500'):
 	
 	plot.yaxis.axis_label = 'Relative Frequency'
 	plot.yaxis[0].formatter = NumeralTickFormatter(format="0%")
-	plot.y_range = Range1d(0.0, 0.08)
+	plot.y_range = Range1d(0.0, 0.20)
 	
 	plot.axis.axis_label_text_font_size = double_graph_axis_label_font_size
 	plot.xaxis.axis_label_text_font = font
@@ -84,7 +84,7 @@ def draw_error_histogram(error_list, my_title='S\&P 500'):
 	return plot
 
 
-def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=100000):
+def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=10000):
 	n = len(eigenvalues)
 	
 	I = numpy.zeros((n, n))
@@ -163,7 +163,7 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	for idx in range(2, 3):
+	for idx in range(1, 2):
 		
 		n = idx + 1
 		mu_Q = eigenvalue_sum / n
@@ -181,7 +181,7 @@ if __name__ == '__main__':
 		var_taylor_2_errors = []
 		var_taylor_3_errors = []
 		
-		for counter in range(10):
+		for counter in range(1000):
 			print(counter)
 			
 			eigenvalues = drs(n, eigenvalue_sum)
@@ -274,6 +274,9 @@ if __name__ == '__main__':
 		answer = (mu_Q / n) * (1 / 2 - 7 / (8 * n) + 3 / (4 * n ** 2))
 		var_three_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
 		
-		draw_error_histogram(mean_taylor_3_errors)
+		plot_mean=draw_error_histogram(mean_taylor_3_errors)
 		
+		plot_var= draw_error_histogram(var_taylor_3_errors)
 		
+		plot=row(plot_mean, plot_var)
+		show(plot)
