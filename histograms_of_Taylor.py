@@ -1,7 +1,87 @@
 import numpy, math
-import csv
+from make_histogram_procedure import make_histogram
 
 from drs import drs
+
+from bokeh.plotting import figure, output_file, show
+from bokeh.models import Range1d
+
+from bokeh.plotting import figure, output_file, show
+from bokeh.models import Label, LinearAxis, Title, PrintfTickFormatter, NumeralTickFormatter
+
+from bokeh.models.tickers import FixedTicker
+from bokeh.models import Arrow, NormalHead, OpenHead, VeeHead, LabelSet
+from bokeh.models import Range1d
+from bokeh.models import ColumnDataSource
+from bokeh.layouts import row
+from bokeh.io import export_png
+
+from bokeh_constants import *
+
+
+
+def draw_error_histogram(error_list, my_title='S\&P 500'):
+	frequency_list, bin_edges_list = make_histogram(error_list)
+	
+	left_edges = bin_edges_list[:-1]
+	right_edges = bin_edges_list[1:]
+	data = {'frequency': frequency_list, 'left_edges': left_edges, 'right_edges': right_edges}
+	source = ColumnDataSource(data=data)
+	
+	# Set up plot
+	plot = figure(plot_width=int(500), plot_height=500)
+	plot.toolbar.logo = None
+	plot.toolbar_location = None
+	
+	
+	the_title = Title(text=my_title, align='center',
+					 text_font=font, text_font_size=double_graph_title_font_size,
+					 text_line_height=1, vertical_align='middle')
+	plot.add_layout(the_title, "above")
+	
+	plot.x_range = Range1d(0.0, right_edges[-1])
+	plot.xaxis.axis_label = ' '
+	plot.xaxis[0].formatter = NumeralTickFormatter(format="0,0")
+	plot.min_border_right = 20
+	plot.min_border_bottom = 30
+	
+	plot.yaxis.axis_label = 'Relative Frequency'
+	plot.yaxis[0].formatter = NumeralTickFormatter(format="0%")
+	plot.y_range = Range1d(0.0, 0.08)
+	
+	plot.axis.axis_label_text_font_size = double_graph_axis_label_font_size
+	plot.xaxis.axis_label_text_font = font
+	plot.yaxis.axis_label_text_font = font
+	
+	plot.axis.major_label_text_font_size = double_graph_major_label_font_size
+	plot.xaxis.major_label_text_font = font
+	plot.yaxis.major_label_text_font = font
+	
+	"""if is_euclid:
+		label_text = "\\mathbf{ A_{\\mathrm{Euclid}}}"
+		x_position = 21
+	else:
+		label_text = "\\mathbf{ A_{\\mathrm{Mhtn}}}"
+		x_position = 50
+
+	latex_x_axis_label = LatexLabel(
+		text=label_text,
+		x=x_position,
+		y=-0.0035,
+		# x_units="screen",
+		# y_units="screen",
+		render_mode="css",
+		text_font_size=double_graph_latex_label_font_size,
+		background_fill_alpha=1)
+
+	plot.add_layout(latex_x_axis_label)"""
+	
+	# construct histogram
+	r0 = plot.quad(
+		bottom=0, top='frequency', left='left_edges', right='right_edges', source=source,
+		fill_color='lightgrey', line_color='black')  # legend='Underperforming monkey portfolios')
+	
+	return plot
 
 
 def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=100000):
@@ -193,5 +273,7 @@ if __name__ == '__main__':
 		
 		answer = (mu_Q / n) * (1 / 2 - 7 / (8 * n) + 3 / (4 * n ** 2))
 		var_three_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
+		
+		draw_error_histogram(mean_taylor_3_errors)
 		
 		
