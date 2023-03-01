@@ -89,7 +89,7 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	for idx in range(3,4):
+	for idx in range(8,9):
 		
 		n = idx+1
 		mu_Q = eigenvalue_sum/n
@@ -218,7 +218,7 @@ if __name__ == '__main__':
 				    'mean_var_taylor_2_errors', 'var_two_term_extreme_error', 'largest_var_taylor_2_error',
 				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'largest_var_taylor_3_error']
 	
-	with open('taylor_errors_4.csv', 'w',) as csvfile:
+	with open('taylor_errors_9.csv', 'w',) as csvfile:
 		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator = '\n')
 		writer.writeheader()
 		writer.writerows(results_list)
