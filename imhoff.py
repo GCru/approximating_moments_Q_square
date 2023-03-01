@@ -50,4 +50,4 @@ if __name__ == '__main__':
     
     print(imhoff(x,coeff,[1]*len(coeff),[0]*len(coeff)))
 
-    print(1-lpb4(coeff=coeff, x=x, p=4))
+    print(1-hbe(coeff=coeff, x=x))
