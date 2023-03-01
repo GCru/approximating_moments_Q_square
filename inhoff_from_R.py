@@ -33,7 +33,7 @@ def imhoffunc(u, lambd, h, x, delta2):
     return res
 
 
-def probQsupx(x, lambd, h, delta2,  epsabs=1.49e-05, epsrel=1.49e-05, limit=10000):
+def imhoff(x, lambd, h, delta2,  epsabs=1.49e-05, epsrel=1.49e-05, limit=10000):
     """
     Implements the Imhof (1961) algorithm
     """
@@ -44,9 +44,10 @@ def probQsupx(x, lambd, h, delta2,  epsabs=1.49e-05, epsrel=1.49e-05, limit=1000
 
 if __name__ == '__main__':
     
-    coeff = [0.98,0.01,0.01]
-    x=1
+    coeff = [0.1]*10
+ 
+    x=1.0
     
-    print(probQsupx(x,coeff,[1]*len(coeff),[0]*len(coeff)))
+    print(imhoff(x,coeff,[1]*len(coeff),[0]*len(coeff)))
 
-    print(1-lpb4(coeff=coeff, x=x, p=10))
+    print(1-lpb4(coeff=coeff, x=x, p=4))
