@@ -4,7 +4,7 @@ import csv
 from drs import drs
 
 
-def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=100000):
+def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=1000):
 	
 	n = len(eigenvalues)
 	
@@ -110,7 +110,7 @@ if __name__ == '__main__':
 		var_taylor_2_errors = []
 		var_taylor_3_errors = []
 		
-		for counter in range(10000):
+		for counter in range(1000):
 			
 			print(counter)
 			
@@ -179,20 +179,25 @@ if __name__ == '__main__':
 			  numpy.min(var_taylor_3_errors), numpy.max(var_taylor_3_errors))
 	
 		
-		
-		lower_bound_mean_taylor_2_errors  = numpy.min(mean_taylor_2_errors)
-		upper_bound_mean_taylor_2_errors = numpy.max(mean_taylor_2_errors)
-		
-		lower_bound_mean_taylor_3_errors = numpy.min(mean_taylor_3_errors)
-		upper_bound_mean_taylor_3_errors = numpy.max(mean_taylor_3_errors)
-		
-		lower_bound_var_taylor_2_errors = numpy.min(var_taylor_2_errors)
-		upper_bound_var_taylor_2_errors = numpy.max(var_taylor_2_errors)
-		
-		lower_bound_var_taylor_3_errors = numpy.min(var_taylor_3_errors)
-		upper_bound_var_taylor_3_errors = numpy.max(var_taylor_3_errors)
-		
-		
+		if abs(numpy.max(mean_taylor_2_errors)) > abs(numpy.min(mean_taylor_2_errors)):
+			largest_mean_taylor_2_error = numpy.max(mean_taylor_2_errors)
+		else:
+			largest_mean_taylor_2_error = numpy.min(mean_taylor_2_errors)
+			
+		if abs(numpy.max(mean_taylor_3_errors)) > abs(numpy.min(mean_taylor_3_errors)):
+			largest_mean_taylor_3_error = numpy.max(mean_taylor_3_errors)
+		else:
+			largest_mean_taylor_3_error = numpy.min(mean_taylor_3_errors)
+			
+		if abs(numpy.max(var_taylor_2_errors)) > abs(numpy.min(var_taylor_2_errors)):
+			largest_var_taylor_2_error = numpy.max(var_taylor_2_errors)
+		else:
+			largest_var_taylor_2_error = numpy.min(var_taylor_2_errors)
+			
+		if abs(numpy.max(var_taylor_3_errors)) > abs(numpy.min(var_taylor_3_errors)):
+			largest_var_taylor_3_error = numpy.max(var_taylor_3_errors)
+		else:
+			largest_var_taylor_3_error = numpy.min(var_taylor_3_errors)
 		
 		answer = mu_Q**0.5
 		mean_two_term_extreme_error = 100* (answer-mean_extreme)/mean_extreme
@@ -210,49 +215,28 @@ if __name__ == '__main__':
 		dict_item= {'n' : n,
 					'mean_mean_taylor_2_errors': numpy.mean(mean_taylor_2_errors),
 					'mean_two_term_extreme_error': mean_two_term_extreme_error,
-				   	'lower_bound_mean_taylor_2_errors': lower_bound_mean_taylor_2_errors,
-					'upper_bound_mean_taylor_2_errors': upper_bound_mean_taylor_2_errors,
+				   	'largest_mean_taylor_2_error': largest_mean_taylor_2_error,
 					'mean_mean_taylor_3_errors': numpy.mean(mean_taylor_3_errors),
 					'mean_three_term_extreme_error': mean_three_term_extreme_error,
-				    'lower_bound_mean_taylor_3_errors': lower_bound_mean_taylor_3_errors,
-					'upper_bound_mean_taylor_3_errors': upper_bound_mean_taylor_3_errors,
+				    'largest_mean_taylor_3_error': largest_mean_taylor_3_error,
 					'mean_var_taylor_2_errors': numpy.mean(var_taylor_2_errors),
 					'var_two_term_extreme_error': var_two_term_extreme_error,
-					'lower_bound_var_taylor_2_errors': lower_bound_var_taylor_2_errors,
-					'upper_bound_var_taylor_2_errors': upper_bound_var_taylor_2_errors,
+					'largest_var_taylor_2_error': largest_var_taylor_2_error,
 					'mean_var_taylor_3_errors': numpy.mean(var_taylor_3_errors),
 					'var_three_term_extreme_error': var_three_term_extreme_error,
-					'lower_bound_var_taylor_3_errors': lower_bound_var_taylor_3_errors,
-					'upper_bound_var_taylor_3_errors': upper_bound_var_taylor_3_errors}
+					'largest_var_taylor_3_error': largest_var_taylor_3_error}
 		
 		results_list.append(dict_item)
 	
-	field_names = ['n',  'mean_mean_taylor_2_errors', 'mean_two_term_extreme_error','lower_bound_mean_taylor_2_errors',
-				   'upper_bound_mean_taylor_2_errors',
-					'mean_mean_taylor_3_errors','mean_three_term_extreme_error', 'lower_bound_mean_taylor_3_errors',
-				   'upper_bound_mean_taylor_3_errors',
-				    'mean_var_taylor_2_errors', 'var_two_term_extreme_error', 'lower_bound_var_taylor_2_errors',
-				   'upper_bound_var_taylor_2_errors',
-				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'lower_bound_var_taylor_3_errors',
-				   'upper_bound_var_taylor_3_errors']
+	field_names = ['n',  'mean_mean_taylor_2_errors', 'mean_two_term_extreme_error','largest_mean_taylor_2_error',
+					'mean_mean_taylor_3_errors','mean_three_term_extreme_error', 'largest_mean_taylor_3_error',
+				    'mean_var_taylor_2_errors', 'var_two_term_extreme_error', 'largest_var_taylor_2_error',
+				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'largest_var_taylor_3_error']
 	
-	with open('taylor_errors_new_'+str(n)+'.csv', 'w',) as csvfile:
+	with open('taylor_errors_test.csv', 'w',) as csvfile:
 		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator = '\n')
 		writer.writeheader()
 		writer.writerows(results_list)
 		
-		
 	print(max_mean_taylor_3_eigenvalues)
 	print(max_var_taylor_3_eigenvalues)
-	# open file in write mode
-
-	max_mean_taylor_3_eigenvalues=numpy.around(max_mean_taylor_3_eigenvalues, decimals=3)
-	max_var_taylor_3_eigenvalues=numpy.around(max_var_taylor_3_eigenvalues, decimals=3)
-	
-	results = [max_mean_taylor_3_eigenvalues, max_var_taylor_3_eigenvalues]
-	numpy.savetxt('taylor_max_eigenvalues_'+str(n)+'.csv',results)
-	
-	# read
-	#result = np.loadtxt("results.txt")
-	#print(result.tolist())
-	
