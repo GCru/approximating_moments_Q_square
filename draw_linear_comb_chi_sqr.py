@@ -83,16 +83,16 @@ def draw_sum_of_chi_cdf(w):
 
 	#w=[0.7,0.1,0.1,0.1] #,0.1,0.1]
 	
-	n = 10
+	n = 2
 	
 	for idx in range(5):
 		w = drs(n, 1)
 		#w=[0.7,0.3]
 		x_axis = [i * 4 * sum(w) / grain for i in range(1, grain + 1)]
 	
-		#y_axis = [lpb4(coeff=w, x=item, p=10) for item in x_axis]
+		y_axis = [lpb4(coeff=w, x=item, p=4) for item in x_axis]
 		
-		y_axis = [(1-imhoff(item, w, [1] * len(w), [0] * len(w))) for item in x_axis]
+		#y_axis = [(1-imhoff(item, w, [1] * len(w), [0] * len(w))) for item in x_axis]
 		plot0.line(x_axis, y_axis, line_width=1, line_color="black", line_dash='dashed')
 	
 	

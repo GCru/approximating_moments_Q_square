@@ -4,7 +4,7 @@ import csv
 from drs import drs
 
 
-def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=100000):
+def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=1000):
 	
 	n = len(eigenvalues)
 	
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	for idx in range(8,9):
+	for idx in range(1,2):
 		
 		n = idx+1
 		mu_Q = eigenvalue_sum/n
@@ -102,12 +102,15 @@ if __name__ == '__main__':
 		
 		print(var_extreme, var_extreme/mu_Q)
 		
+		max_mean_taylor_3_errors =0
+		max_var_taylor_3_errors =0
+		
 		mean_taylor_2_errors = []
 		mean_taylor_3_errors = []
 		var_taylor_2_errors = []
 		var_taylor_3_errors = []
 		
-		for counter in range(10000):
+		for counter in range(1000):
 			
 			print(counter)
 			
@@ -139,6 +142,10 @@ if __name__ == '__main__':
 			mean_taylor_3_errors.append(100* (mean_sqrt_taylor_3-mean_lin_comb_chi_monte_carlo)/mean_lin_comb_chi_monte_carlo)
 			print('Mean taylor 3 error: ',mean_taylor_3_errors[-1], '%' )
 			
+			if abs(mean_taylor_3_errors[-1])> max_mean_taylor_3_errors:
+				max_mean_taylor_3_errors = abs(mean_taylor_3_errors[-1])
+				max_mean_taylor_3_eigenvalues = eigenvalues
+			
 			
 			sum_monte_carlo_variance =sum_monte_carlo_variance+ var_lin_comb_chi_monte_carlo
 			
@@ -151,6 +158,13 @@ if __name__ == '__main__':
 			#print('Taylor 3 variance: ', var_sqrt_taylor_3)
 			var_taylor_3_errors.append(100 * (var_sqrt_taylor_3 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
 			print('Var Taylor 3  error: ',  var_taylor_3_errors[-1], '%')
+			
+			if abs(var_taylor_3_errors[-1])> max_var_taylor_3_errors:
+				max_var_taylor_3_errors = abs(var_taylor_3_errors[-1])
+				max_var_taylor_3_eigenvalues = eigenvalues
+			
+			
+			
 		print()
 		print(sum_monte_carlo_variance/100)
 		print('Final result')
@@ -218,7 +232,10 @@ if __name__ == '__main__':
 				    'mean_var_taylor_2_errors', 'var_two_term_extreme_error', 'largest_var_taylor_2_error',
 				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'largest_var_taylor_3_error']
 	
-	with open('taylor_errors_9.csv', 'w',) as csvfile:
+	with open('taylor_errors_test.csv', 'w',) as csvfile:
 		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator = '\n')
 		writer.writeheader()
 		writer.writerows(results_list)
+		
+	print(max_mean_taylor_3_eigenvalues)
+	print(max_var_taylor_3_eigenvalues)
