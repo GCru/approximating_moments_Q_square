@@ -6,7 +6,7 @@ from bokeh.models import Range1d, Div
 from bokeh.models import Legend, LegendItem
 from bokeh.models.annotations.labels import Label
 
-
+import bokeh_constants
 from math import pi
 x = numpy.linspace(0, 6, 600)
 y = x**0.5
@@ -34,6 +34,8 @@ p_left.line(x, taylor_4, color="black", alpha=0.6, line_width=2, line_dash='dott
 p_left.legend.location="top_left"
 
 p_left.xaxis.axis_label = r"$$x$$"
+p_left.xaxis.axis_label_text_font_size=bokeh_constants.double_graph_axis_label_font_size
+p_left.axis.major_label_text_font_size=bokeh_constants.double_graph_major_label_font_size
 
 
 #show(p_left)
@@ -53,6 +55,8 @@ p_right.line(x, taylor_6, color="black", alpha=0.6, line_width=2, line_dash='das
 p_right.legend.location="top_left"
 
 p_right.xaxis.axis_label = r"$$x$$"
+p_right.xaxis.axis_label_text_font_size=bokeh_constants.double_graph_axis_label_font_size
+p_right.axis.major_label_text_font_size=bokeh_constants.double_graph_major_label_font_size
 
 the_row = row(p_left,p_right)
 #p_left.background_fill_color = "#efefef"
