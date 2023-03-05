@@ -51,7 +51,7 @@ p_right.line(x, y, color="black", alpha=1, line_width=3)
 p_right.line(x, taylor_3, color="black", alpha=0.6, line_width=2, line_dash="solid", legend_label="Three-term Taylor")
 p_right.line(x, taylor_4, color="black", alpha=0.6, line_width=2, line_dash='dotted', legend_label= "Four-term Taylor")
 p_right.line(x, taylor_5, color="black", alpha=0.6, line_width=2, line_dash='dotdash',legend_label= "Five-term Taylor")
-p_right.line(x, taylor_6, color="black", alpha=0.6, line_width=2, line_dash='dashdot', legend_label= "Six-term Taylor")
+p_right.line(x, taylor_6, color="black", alpha=0.6, line_width=2, line_dash='dashed', legend_label= "Six-term Taylor")
 
 p_right.legend.location="top_left"
 p_right.legend.label_text_font_size=bokeh_constants.double_graph_axis_label_font_size
