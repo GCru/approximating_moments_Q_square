@@ -1,7 +1,7 @@
 import numpy
 
 from bokeh.plotting import figure, show
-from bokeh.layouts import row,column
+from bokeh.layouts import row,column, Spacer
 from bokeh.models import Range1d, Div
 from bokeh.models import Legend, LegendItem
 from bokeh.models.annotations.labels import Label
@@ -19,7 +19,7 @@ taylor_4 = taylor_3+(3/48)*x0**(-5/2)*(x-x0)**3
 taylor_5 = taylor_4-(15/(16*24))*x0**(-7/2)*(x-x0)**4
 taylor_6 = taylor_5+ (105/(32*120))*x0**(-9/2)*(x-x0)**5
 
-p_left = figure(width=400, height=350, tools="",toolbar_location=None)
+p_left = figure(width=500, height=500, tools="",toolbar_location=None)
 p_left.x_range=Range1d(0,5)
 p_left.y_range=Range1d(0,3)
 
@@ -32,6 +32,7 @@ p_left.line(x, taylor_4, color="black", alpha=0.6, line_width=2, line_dash='dott
 
 #p_left.add_layout(legend)
 p_left.legend.location="top_left"
+p_left.legend.label_text_font_size=bokeh_constants.double_graph_axis_label_font_size
 
 p_left.xaxis.axis_label = r"$$x$$"
 p_left.xaxis.axis_label_text_font_size=bokeh_constants.double_graph_axis_label_font_size
@@ -40,7 +41,7 @@ p_left.axis.major_label_text_font_size=bokeh_constants.double_graph_major_label_
 
 #show(p_left)
 #exit()
-p_right = figure(width=400, height=350, title="", tools="",
+p_right = figure(width=500, height=500, title="", tools="",
            toolbar_location=None)
 
 p_right.x_range=Range1d(0,6)
@@ -53,14 +54,15 @@ p_right.line(x, taylor_5, color="black", alpha=0.6, line_width=2, line_dash='dot
 p_right.line(x, taylor_6, color="black", alpha=0.6, line_width=2, line_dash='dashdot', legend_label= "Six-term Taylor")
 
 p_right.legend.location="top_left"
+p_right.legend.label_text_font_size=bokeh_constants.double_graph_axis_label_font_size
 
 p_right.xaxis.axis_label = r"$$x$$"
 p_right.xaxis.axis_label_text_font_size=bokeh_constants.double_graph_axis_label_font_size
 p_right.axis.major_label_text_font_size=bokeh_constants.double_graph_major_label_font_size
 
-the_row = row(p_left,p_right)
+the_row = row(p_left,Spacer(width=15),p_right)
 #p_left.background_fill_color = "#efefef"
 #p.xaxis.fixed_location = 0
 #p.yaxis.fixed_location = 0
 
-show(column(Div(text=r"<h3>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp$$\text{Approximating } \sqrt{x} \text{ with truncated Taylor expansions}$$</h3>",), the_row))
+show(column(Div(text=r"<h2>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp$$\text{Approximating } \sqrt{x} \text{ with truncated Taylor expansions}$$</h2>",), the_row))
