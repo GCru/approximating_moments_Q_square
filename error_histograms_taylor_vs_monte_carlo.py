@@ -89,7 +89,7 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	for idx in range(3,4):
+	for idx in range(2,3):
 		
 		n = idx+1
 		mu_Q = eigenvalue_sum/n
