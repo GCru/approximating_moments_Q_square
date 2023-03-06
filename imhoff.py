@@ -33,7 +33,7 @@ def imhoffunc(u, lambd, h, x, delta2):
     return res
 
 
-def imhoff(x, lambd, h, delta2,  epsabs=1.49e-05, epsrel=1.49e-05, limit=10000):
+def imhoff(x, lambd, h, delta2,  epsabs=1.49e-04, epsrel=1.49e-04, limit=100000):
     """
     Implements the Imhof (1961) algorithm
     """
