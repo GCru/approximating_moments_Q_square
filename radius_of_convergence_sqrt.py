@@ -5,6 +5,7 @@ from bokeh.layouts import row,column, Spacer
 from bokeh.models import Range1d, Div
 from bokeh.models import Legend, LegendItem
 from bokeh.models.annotations.labels import Label
+from bokeh.io import export_png
 
 import bokeh_constants
 from math import pi
@@ -65,4 +66,8 @@ the_row = row(p_left,Spacer(width=15),p_right)
 #p.xaxis.fixed_location = 0
 #p.yaxis.fixed_location = 0
 
-show(column(Div(text=r"<h2>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp$$\text{Approximating } \sqrt{x} \text{ with truncated Taylor expansions}$$</h2>",), the_row))
+export_plot = column(Div(text=r"<h2>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp$$\text{Approximating } \sqrt{x} \text{ with truncated Taylor expansions}$$</h2>",), the_row)
+
+show(export_plot)
+
+export_png(export_plot, filename="truncated_taylor_expansions_for_root_x.png")
