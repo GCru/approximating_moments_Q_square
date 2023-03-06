@@ -53,7 +53,7 @@ def beta_h(w):
 
 def draw_sum_of_chi_cdf(w, n):
 	
-	grain = 100
+	grain = 900 #( note 1000 does not work)
 	
 	plot0 = figure(width=500, height=500)
 	
@@ -73,7 +73,7 @@ def draw_sum_of_chi_cdf(w, n):
 	
 	# Inbetween
 	#####################################################
-	n=2
+	#n=2
 	if n == 2:
 
 		w=[0,1]
@@ -91,9 +91,9 @@ def draw_sum_of_chi_cdf(w, n):
 			
 	else:
 		
-		for idx in range(0, 1):
+		for idx in range(0, 5):
 			w = drs(n, 1)
-			w= [0.70,0.3]
+			#w= [0.70,0.3]
 			print(w)
 			
 			x_axis = [i * 5 * sum(w) / grain for i in range(1, grain + 1)]
