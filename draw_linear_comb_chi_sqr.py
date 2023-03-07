@@ -13,6 +13,8 @@ from imhoff import imhoff
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import Range1d, PrintfTickFormatter, NumeralTickFormatter, Title
 from bokeh.layouts import row
+from bokeh.layouts import row,column, Spacer
+from bokeh.models import Range1d, Div
 from bokeh.models import ColumnDataSource
 
 """from fundskill_utilities.fundskill_utilities import change_to_another_month_end, \
@@ -63,12 +65,14 @@ def draw_sum_of_chi_cdf(w, n):
 	####################################################
 	
 	x_axis = [i * 5 * sum(w) / grain for i in range(1, grain + 1)]
+	plot0.xrange = Range1d(0,5)
 	
 	#y_axis = [lpb4(coeff=w, x=item) for item in x_axis]
 	#plot0.line(x_axis, y_axis, line_width=1)
 	
 	y_axis = [chi2.cdf(item, 1, scale=1 / 1) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2, line_color="blue")
+	plot0.yrange = Range1d(0,1)
 
 	
 	# Inbetween
@@ -103,7 +107,6 @@ def draw_sum_of_chi_cdf(w, n):
 			y_axis = [(1 - imhoff(item, w, [1] * len(w), [0] * len(w))) for item in x_axis]
 			plot0.line(x_axis, y_axis, line_width=1, line_color="black", line_dash='dashed')
 		
-
 	# Minimum
 	##########################################################
 
@@ -117,10 +120,9 @@ def draw_sum_of_chi_cdf(w, n):
 	y_axis = [chi2.cdf(item,n,scale=1/n) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2, line_color="red")
 	
+	#show(plot0)
 	
-	show(plot0)
-	
-	return
+	return plot0
 
 
 
@@ -150,7 +152,12 @@ if __name__ == '__main__':
 	#draw_function()
 	#exit()
 	
-	draw_sum_of_chi_cdf([0, 1],2)
-	exit()
+	plot_left = draw_sum_of_chi_cdf([0, 1],2)
+	
+	plot_right = draw_sum_of_chi_cdf([0, 1],10)
+	
+	the_row = row(plot_left, Spacer(width=15), plot_right)
+	show(the_row)
+	
 	
 	
