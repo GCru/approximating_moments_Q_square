@@ -10,6 +10,7 @@ from momentchi2 import hbe, lpb4,sw,wf
 from drs import drs
 from imhoff import imhoff
 
+import bokeh_constants
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import Range1d, PrintfTickFormatter, NumeralTickFormatter, Title
 from bokeh.layouts import row
@@ -56,23 +57,37 @@ def beta_h(w):
 def draw_sum_of_chi_cdf(w, n):
 	
 	grain = 900 #( note 1000 does not work)
+	#plot0 = figure(height=250, title=r"\[\sin(x)\text{ for }x\text{ between }-2\pi\text{ and }2\pi\]")
+	plot0 = figure(width=500, height=500, title = r"$$\chi^2$$" , tools="",
+           toolbar_location=None)
 	
-	plot0 = figure(width=500, height=500)
+	if n==2:
+		plot0.title = r"$$\text{CDFs of weighted sum of }n=2\text{ chi-squared variables}$$"
+	if n==10:
+		plot0.title = r"$$\text{CDFs of weighted sum of }n=10\text{ chi-squared variables}$$"
 	
+	plot0.title.text_font_size="16px" #bokeh_constants.double_graph_sub_title_font_size
 	
+	plot0.xaxis.axis_label = r"$$Q$$"
+	plot0.xaxis.axis_label_text_font_size = bokeh_constants.double_graph_axis_label_font_size
+	
+	plot0.yaxis.axis_label = r"$$F_{Q}$$"
+	plot0.yaxis.axis_label_text_font_size = bokeh_constants.double_graph_axis_label_font_size
+	
+	plot0.axis.major_label_text_font_size = bokeh_constants.double_graph_major_label_font_size
 	
 	# Maximum
 	####################################################
 	
 	x_axis = [i * 5 * sum(w) / grain for i in range(1, grain + 1)]
-	plot0.xrange = Range1d(0,5)
+	plot0.x_range = Range1d(0,5)
 	
 	#y_axis = [lpb4(coeff=w, x=item) for item in x_axis]
 	#plot0.line(x_axis, y_axis, line_width=1)
 	
 	y_axis = [chi2.cdf(item, 1, scale=1 / 1) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2, line_color="blue")
-	plot0.yrange = Range1d(0,1)
+	plot0.y_range = Range1d(0,1.01)
 
 	
 	# Inbetween
@@ -81,7 +96,7 @@ def draw_sum_of_chi_cdf(w, n):
 	if n == 2:
 
 		w=[0,1]
-		for idx in range(0,4):
+		for idx in range(0,1):
 			w[0] = 0.1*(idx+1)
 			w[1] = 1-w[0]
 			print(w)
@@ -95,7 +110,7 @@ def draw_sum_of_chi_cdf(w, n):
 			
 	else:
 		
-		for idx in range(0, 5):
+		for idx in range(0, 1):
 			w = drs(n, 1)
 			#w= [0.70,0.3]
 			print(w)
@@ -120,11 +135,7 @@ def draw_sum_of_chi_cdf(w, n):
 	y_axis = [chi2.cdf(item,n,scale=1/n) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2, line_color="red")
 	
-	#show(plot0)
-	
 	return plot0
-
-
 
 
 def draw_function():
@@ -144,7 +155,7 @@ def draw_function():
 	y_axis= [math.exp(-item/10) for item in x_axis]
 	plot0.line(x_axis, y_axis, line_width=2,line_color='black')
 	
-	show(plot0)
+	#show(plot0)
 	return
 
 
