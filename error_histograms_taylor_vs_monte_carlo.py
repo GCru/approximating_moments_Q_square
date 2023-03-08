@@ -89,7 +89,7 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	for idx in range(6,7):
+	for idx in range(49,50):
 		
 		n = idx+1
 		mu_Q = eigenvalue_sum/n
@@ -178,8 +178,6 @@ if __name__ == '__main__':
 		print('Var taylor 3 errors: ', numpy.mean(var_taylor_3_errors), numpy.std(var_taylor_3_errors),
 			  numpy.min(var_taylor_3_errors), numpy.max(var_taylor_3_errors))
 	
-		
-		
 		lower_bound_mean_taylor_2_errors  = numpy.min(mean_taylor_2_errors)
 		upper_bound_mean_taylor_2_errors = numpy.max(mean_taylor_2_errors)
 		

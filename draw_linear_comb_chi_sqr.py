@@ -16,6 +16,8 @@ from bokeh.models import Range1d, PrintfTickFormatter, NumeralTickFormatter, Tit
 from bokeh.layouts import row
 from bokeh.layouts import row,column, Spacer
 from bokeh.models import Range1d, Div
+from bokeh.models.annotations.labels import Label
+from bokeh.io import export_png
 from bokeh.models import ColumnDataSource
 
 """from fundskill_utilities.fundskill_utilities import change_to_another_month_end, \
@@ -62,9 +64,9 @@ def draw_sum_of_chi_cdf(w, n):
            toolbar_location=None)
 	
 	if n==2:
-		plot0.title = r"$$\text{CDFs of weighted sum of }n=2\text{ chi-squared variables}$$"
+		plot0.title = r"$$n=2$$"
 	if n==10:
-		plot0.title = r"$$\text{CDFs of weighted sum of }n=10\text{ chi-squared variables}$$"
+		plot0.title = r"$$n=10$$"
 	
 	plot0.title.text_font_size="16px" #bokeh_constants.double_graph_sub_title_font_size
 	
@@ -86,8 +88,15 @@ def draw_sum_of_chi_cdf(w, n):
 	#plot0.line(x_axis, y_axis, line_width=1)
 	
 	y_axis = [chi2.cdf(item, 1, scale=1 / 1) for item in x_axis]
-	plot0.line(x_axis, y_axis, line_width=2, line_color="blue")
-	plot0.y_range = Range1d(0,1.01)
+	plot0.line(x_axis, y_axis, line_width=2, line_color="black", alpha=1)
+	plot0.y_range = Range1d(0,1.002)
+	
+	label = Label(
+		text=r"$$\chi^2(1)$$", x=3.25,y=0.85)
+		#x=300, y=300,
+		#x_units="screen", y_units="screen",
+	#)
+	plot0.add_layout(label)
 
 	
 	# Inbetween
@@ -96,7 +105,7 @@ def draw_sum_of_chi_cdf(w, n):
 	if n == 2:
 
 		w=[0,1]
-		for idx in range(0,1):
+		for idx in range(0,4):
 			w[0] = 0.1*(idx+1)
 			w[1] = 1-w[0]
 			print(w)
@@ -110,7 +119,7 @@ def draw_sum_of_chi_cdf(w, n):
 			
 	else:
 		
-		for idx in range(0, 1):
+		for idx in range(0, 5):
 			w = drs(n, 1)
 			#w= [0.70,0.3]
 			print(w)
@@ -120,7 +129,7 @@ def draw_sum_of_chi_cdf(w, n):
 			# y_axis = [lpb4(coeff=w, x=item, p=4) for item in x_axis]
 			
 			y_axis = [(1 - imhoff(item, w, [1] * len(w), [0] * len(w))) for item in x_axis]
-			plot0.line(x_axis, y_axis, line_width=1, line_color="black", line_dash='dashed')
+			plot0.line(x_axis, y_axis, line_width=1, line_color="black", alpha=1, line_dash='dashed')
 		
 	# Minimum
 	##########################################################
@@ -133,7 +142,19 @@ def draw_sum_of_chi_cdf(w, n):
 	#plot0.line(x_axis, y_axis, line_width=2, line_color="red")
 	
 	y_axis = [chi2.cdf(item,n,scale=1/n) for item in x_axis]
-	plot0.line(x_axis, y_axis, line_width=2, line_color="red")
+	plot0.line(x_axis, y_axis, line_width=0.8, line_color="black", alpha=0.8)
+	
+	if n==2:
+		label = Label(
+			text=r"$${\small \frac{1}{2}}\chi^2(2)$$", x=1.8, y=0.91)
+		# x=300, y=300,
+		# x_units="screen", y_units="screen",
+		# )
+	else:
+		label = Label(
+			text=r"$${\small \frac{1}{10}}\chi^2(10)$$", x=0.75, y=0.91)
+		
+	plot0.add_layout(label)
 	
 	return plot0
 
@@ -168,7 +189,15 @@ if __name__ == '__main__':
 	plot_right = draw_sum_of_chi_cdf([0, 1],10)
 	
 	the_row = row(plot_left, Spacer(width=15), plot_right)
-	show(the_row)
+	#show(the_row)
+	
+	export_plot = column(
+		Div(text=r"<h2>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp $$\text{CDFs of a weighted sum of chi-squared variables}$$</h2>", ),
+		the_row)
+	
+	show(export_plot)
+	
+	export_png(export_plot, filename="CDFs_weighted_chi_squares.png")
 	
 	
 	
