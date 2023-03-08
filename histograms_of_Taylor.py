@@ -11,16 +11,16 @@ from bokeh.models import Label, LinearAxis, Title, PrintfTickFormatter, NumeralT
 
 from bokeh.models.tickers import FixedTicker
 from bokeh.models import Arrow, NormalHead, OpenHead, VeeHead, LabelSet
-from bokeh.models import Range1d
+from bokeh.models import Range1d, Div
 from bokeh.models import ColumnDataSource
-from bokeh.layouts import row
+from bokeh.layouts import row, column
 from bokeh.io import export_png
 
 from bokeh_constants import *
 
 
 
-def draw_error_histogram(error_list, my_title='S\&P 500'):
+def draw_error_histogram(error_list, my_title=''):
 	frequency_list, bin_edges_list = make_histogram(error_list)
 	
 	left_edges = bin_edges_list[:-1]
@@ -29,22 +29,23 @@ def draw_error_histogram(error_list, my_title='S\&P 500'):
 	source = ColumnDataSource(data=data)
 	
 	# Set up plot
-	plot = figure(plot_width=int(500), plot_height=500)
+	plot = figure(width=500, height=500)
 	plot.toolbar.logo = None
 	plot.toolbar_location = None
 	
 	
-	the_title = Title(text=my_title, align='center',
-					 text_font=font, text_font_size=double_graph_title_font_size,
+	the_title = Title(text=my_title, align='left',
+					 text_font=font, text_font_size="18px",
 					 text_line_height=1, vertical_align='middle')
 	plot.add_layout(the_title, "above")
 	
 	plot.x_range = Range1d(left_edges[0], right_edges[-1])
 	plot.xaxis.axis_label = ' '
-	plot.xaxis[0].formatter = NumeralTickFormatter(format="0,0")
+	plot.xaxis[0].formatter = NumeralTickFormatter(format="0%")
 	plot.min_border_right = 20
 	plot.min_border_bottom = 30
 	
+	plot.xaxis.axis_label = 'Approximation error'
 	plot.yaxis.axis_label = 'Relative Frequency'
 	plot.yaxis[0].formatter = NumeralTickFormatter(format="0%")
 	plot.y_range = Range1d(0.0, 0.20)
@@ -57,24 +58,6 @@ def draw_error_histogram(error_list, my_title='S\&P 500'):
 	plot.xaxis.major_label_text_font = font
 	plot.yaxis.major_label_text_font = font
 	
-	"""if is_euclid:
-		label_text = "\\mathbf{ A_{\\mathrm{Euclid}}}"
-		x_position = 21
-	else:
-		label_text = "\\mathbf{ A_{\\mathrm{Mhtn}}}"
-		x_position = 50
-
-	latex_x_axis_label = LatexLabel(
-		text=label_text,
-		x=x_position,
-		y=-0.0035,
-		# x_units="screen",
-		# y_units="screen",
-		render_mode="css",
-		text_font_size=double_graph_latex_label_font_size,
-		background_fill_alpha=1)
-
-	plot.add_layout(latex_x_axis_label)"""
 	
 	# construct histogram
 	r0 = plot.quad(
@@ -181,25 +164,13 @@ if __name__ == '__main__':
 		var_taylor_2_errors = []
 		var_taylor_3_errors = []
 		
-		for counter in range(1000):
+		for counter in range(100):
 			print(counter)
 			
 			eigenvalues = drs(n, eigenvalue_sum)
-			# eigenvalues=[0.1,0.9]
 			print()
 			print(eigenvalues)
-			# n=3
-			# eigenvalues=eigenvalues+[0]
-			# print(eigenvalues)
 			
-			# n=2
-			# eigenvalues=[1/3,1/3,1/3]
-			# eigenvalues=[0.5, 0.5]
-			# eigenvalues=[1,0,0,0,0,0,0,0,0,0]
-			# eigenvalues=[0.4, 0.4/9, 0.4/9, 0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9, 0.4/9,0.4/9]
-			# eigenvalues=[0.44, 0.44, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8, 0.02/8,]
-			# eigenvalues=[0.1, 0.1, 0.1, 0.1,0.1,0.1,0.1,0.1,0.1,0.1]
-			# eigenvalues = [0.1]*10
 			mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(
 				eigenvalues)
 			print('Monte carlo mean', mean_lin_comb_chi_monte_carlo, 'expec6ted mean', 0.1 ** 0.5 * (1 - 1 / 40))
@@ -207,12 +178,12 @@ if __name__ == '__main__':
 			
 			mean_sqrt_taylor_2 = calculate_cumulant(1, eigenvalues) ** 0.5
 			mean_taylor_2_errors.append(
-				100 * (mean_sqrt_taylor_2 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
+				 (mean_sqrt_taylor_2 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
 			print('Mean taylor 2 error: ', mean_taylor_2_errors[-1], '%')
 			
 			mean_sqrt_taylor_3 = calculate_taylor_3_mean_sqrt(eigenvalues)
 			mean_taylor_3_errors.append(
-				100 * (mean_sqrt_taylor_3 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
+				 (mean_sqrt_taylor_3 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
 			print('Mean taylor 3 error: ', mean_taylor_3_errors[-1], '%')
 			
 			sum_monte_carlo_variance = sum_monte_carlo_variance + var_lin_comb_chi_monte_carlo
@@ -220,16 +191,16 @@ if __name__ == '__main__':
 			var_sqrt_taylor_2 = calculate_taylor_2_var_sqrt(eigenvalues)
 			# print('Var Taylor 2: ', var_sqrt_taylor_2)
 			var_taylor_2_errors.append(
-				100 * (var_sqrt_taylor_2 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
+				 (var_sqrt_taylor_2 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
 			print('Var Taylor 2 error: ', var_taylor_2_errors[-1], '%')
 			
 			var_sqrt_taylor_3 = calculate_taylor_3_var_sqrt(eigenvalues)
 			# print('Taylor 3 variance: ', var_sqrt_taylor_3)
 			var_taylor_3_errors.append(
-				100 * (var_sqrt_taylor_3 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
+				 (var_sqrt_taylor_3 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
 			print('Var Taylor 3  error: ', var_taylor_3_errors[-1], '%')
 		print()
-		print(sum_monte_carlo_variance / 100)
+		print(sum_monte_carlo_variance )
 		print('Final result')
 		print('Mean taylor 2 errors: ', numpy.mean(mean_taylor_2_errors), numpy.std(mean_taylor_2_errors),
 			  numpy.min(mean_taylor_2_errors),
@@ -263,20 +234,27 @@ if __name__ == '__main__':
 			largest_var_taylor_3_error = numpy.min(var_taylor_3_errors)
 		
 		answer = mu_Q ** 0.5
-		mean_two_term_extreme_error = 100 * (answer - mean_extreme) / mean_extreme
+		mean_two_term_extreme_error =  (answer - mean_extreme) / mean_extreme
 		
 		answer = (1 - 1 / (4 * n)) * mu_Q ** 0.5
-		mean_three_term_extreme_error = 100 * (answer - mean_extreme) / mean_extreme
+		mean_three_term_extreme_error =  (answer - mean_extreme) / mean_extreme
 		
 		answer = mu_Q / (2 * n)
-		var_two_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
+		var_two_term_extreme_error =  (answer - var_extreme) / var_extreme
 		
 		answer = (mu_Q / n) * (1 / 2 - 7 / (8 * n) + 3 / (4 * n ** 2))
-		var_three_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
+		var_three_term_extreme_error =  (answer - var_extreme) / var_extreme
 		
-		plot_mean=draw_error_histogram(mean_taylor_3_errors)
+		plot_mean=draw_error_histogram(mean_taylor_3_errors,my_title=r"$${\bf E}[\Sqrt{Q}]$$")
 		
-		plot_var= draw_error_histogram(var_taylor_3_errors)
+		plot_var= draw_error_histogram(var_taylor_3_errors,my_title=r"$$\mathtt{Var}[\sqrt{Q}]$$")
 		
-		plot=row(plot_mean, plot_var)
-		show(plot)
+		the_row=row(plot_mean, plot_var)
+		
+		export_plot = column(
+			Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Three-term Taylor expansion approximation errors</h2>", ),
+			the_row)
+		
+		show(export_plot)
+		
+		export_png(export_plot, filename="error_histograms.png")

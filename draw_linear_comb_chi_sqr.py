@@ -199,5 +199,3 @@ if __name__ == '__main__':
 	
 	export_png(export_plot, filename="CDFs_weighted_chi_squares.png")
 	
-	
-	
