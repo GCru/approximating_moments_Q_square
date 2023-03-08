@@ -92,7 +92,7 @@ def draw_sum_of_chi_cdf(w, n):
 	plot0.y_range = Range1d(0,1.002)
 	
 	label = Label(
-		text=r"$$\chi^2(1)$$", x=3.25,y=0.85)
+		text=r"$$\chi^2(1)$$", x=3.25,y=0.87)
 		#x=300, y=300,
 		#x_units="screen", y_units="screen",
 	#)

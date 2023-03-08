@@ -164,7 +164,7 @@ if __name__ == '__main__':
 		var_taylor_2_errors = []
 		var_taylor_3_errors = []
 		
-		for counter in range(100):
+		for counter in range(1000):
 			print(counter)
 			
 			eigenvalues = drs(n, eigenvalue_sum)
@@ -245,9 +245,9 @@ if __name__ == '__main__':
 		answer = (mu_Q / n) * (1 / 2 - 7 / (8 * n) + 3 / (4 * n ** 2))
 		var_three_term_extreme_error =  (answer - var_extreme) / var_extreme
 		
-		plot_mean=draw_error_histogram(mean_taylor_3_errors,my_title=r"$${\bf E}[\Sqrt{Q}]$$")
+		plot_mean=draw_error_histogram(mean_taylor_3_errors,my_title=r"$${\bf E} \left [\sqrt{Q} \right ]$$")
 		
-		plot_var= draw_error_histogram(var_taylor_3_errors,my_title=r"$$\mathtt{Var}[\sqrt{Q}]$$")
+		plot_var= draw_error_histogram(var_taylor_3_errors,my_title=r"$$\mathtt{Var}\left [\sqrt{Q} \right ]$$")
 		
 		the_row=row(plot_mean, plot_var)
 		
