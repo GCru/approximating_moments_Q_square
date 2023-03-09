@@ -4,7 +4,7 @@ import csv
 from drs import drs
 
 
-def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=100000):
+def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=10000):
 	
 	n = len(eigenvalues)
 	
@@ -79,6 +79,25 @@ def calculate_taylor_3_var_sqrt(eigenvalues):
 	
 	return term1 + term2 - term3
 
+def calculate_extreme_mean_and_var(eigenvalue_sum,n):
+	""" Calculate analytical values for mean and var when all eigenvalues are euqal
+	:param eigenvaluesum:
+	:param n:
+	:return:
+	"""
+	
+	mu_Q = eigenvalue_sum / n
+	mean_extreme = ((2 * mu_Q / n) ** 0.5) * math.gamma((n + 1) / 2) / math.gamma(n / 2)
+	#print(mean_extreme, mean_extreme / mu_Q ** 0.5)
+	# exit()
+	var_extreme = (2 ** 0.5 * math.gamma((n + 1) / 2) / math.gamma(n / 2)) ** 2
+	
+	var_extreme = mu_Q * (1 - var_extreme / n)
+	
+	#print(var_extreme, var_extreme / mu_Q)
+	
+	return mean_extreme, var_extreme
+
 
 if __name__ == '__main__':
 	
@@ -89,24 +108,22 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	for idx in range(49,50):
+	for idx in range(99,100):
 		
 		n = idx+1
-		mu_Q = eigenvalue_sum/n
-		mean_extreme = ((2*mu_Q/n)**0.5)*math.gamma((n+1)/2)/math.gamma(n/2)
-		print(mean_extreme, mean_extreme/mu_Q**0.5)
-		#exit()
-		var_extreme =  (2**0.5 * math.gamma((n+1)/2)/math.gamma(n/2))**2
 		
-		var_extreme = mu_Q * (1 - var_extreme/n)
-		
-		print(var_extreme, var_extreme/mu_Q)
+		if n<102:
+			mean_extreme_error, var_extreme_error = calculate_extreme_mean_and_var(eigenvalue_sum, n)
+		else:
+			mean_extreme_error =0
+			var_extreme_error =0
 		
 		max_mean_taylor_3_errors =0
 		max_var_taylor_3_errors =0
 		
 		mean_taylor_2_errors = []
 		mean_taylor_3_errors = []
+		
 		var_taylor_2_errors = []
 		var_taylor_3_errors = []
 		
