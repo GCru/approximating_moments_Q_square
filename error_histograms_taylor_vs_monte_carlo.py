@@ -4,7 +4,7 @@ import csv
 from drs import drs
 
 
-def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=100):
+def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=100000):
 	
 	n = len(eigenvalues)
 	
@@ -15,7 +15,7 @@ def monte_carlo_simulations_lin_comb_chi(eigenvalues, iterations=100):
 	
 	for count in range(iterations):
 		z = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1 / n) * I)
-		
+		print('stuck', count)
 		chi_list[count] = (numpy.dot(eigenvalues, numpy.square(z)))**0.5
 		
 	mean_lin_comb_chi_monte_carlo = numpy.mean(chi_list)
@@ -108,16 +108,44 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	for idx in range(99,100):
+	for idx in range(0,1):
 		
 		n = idx+1
 		
 		if n<102:
 			mean_extreme, var_extreme = calculate_extreme_mean_and_var(eigenvalue_sum, n)
+			mu_Q = eigenvalue_sum / n
+			answer = mu_Q ** 0.5
+			mean_two_term_extreme_error = 100 * (answer - mean_extreme) / mean_extreme
+			
+			answer = (1 - 1 / (4 * n)) * mu_Q ** 0.5
+			mean_three_term_extreme_error = 100 * (answer - mean_extreme) / mean_extreme
+			
+			answer = (1- 1/(4*n)+ 1/(2*n*n))* mu_Q ** 0.5
+			mean_four_term_extreme_error = 100 * (answer - mean_extreme) / mean_extreme
+			
+			
+			answer = mu_Q / (2 * n)
+			var_two_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
+			
+			answer = (mu_Q / n) * (1 / 2 - 7 / (8 * n) + 3 / (4 * n ** 2))
+			var_three_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
 		else:
 			mean_extreme =0
 			var_extreme =0
+			mean_two_term_extreme_error = 0
+			mean_three_term_extreme_error = 0
+			mean_four_term_extreme_error =0
+			var_two_term_extreme_error = 0
+			var_three_term_extreme_error = 0
+			
+		print('Mean two term extreme error', mean_two_term_extreme_error)
+		print('Mean three term extreme error', mean_three_term_extreme_error)
+		print('Mean four term extreme error', mean_four_term_extreme_error)
+		print('Var two term extreme error', var_two_term_extreme_error)
+		print('Var three term extreme error', var_three_term_extreme_error)
 		
+	
 		max_mean_taylor_3_errors =0
 		max_var_taylor_3_errors =0
 		
