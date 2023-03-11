@@ -8,7 +8,7 @@ def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eig
 	
 	
 	if fname.is_file():
-		print('Exists')
+		print('Appending to an existing file')
 		with open(fname, 'rb') as fp:
 			num_lines=0
 			while True:
@@ -26,7 +26,7 @@ def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eig
 			#	print(line)
 		total_remaining_eigenvalue_draws = total_eigenvalue_draws - num_lines
 	else:
-		print('Not found')
+		print('Starting a new file')
 		num_lines=0
 		total_remaining_eigenvalue_draws = total_eigenvalue_draws
 	
@@ -46,13 +46,14 @@ def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eig
 		mean_lin_comb_chi_monte_carlo = numpy.mean(chi_list)
 		var_lin_comb_chi_monte_carlo = numpy.var(chi_list)
 	
-		print('Eigenvalue_set: ', num_lines + count_eigenvalue_draws+1 )
+		print('Eigenvalue set number: ', num_lines + count_eigenvalue_draws+1)
+		print('Eigenvalue set:', eigenvalues)
+		print('Mean:',mean_lin_comb_chi_monte_carlo, 'Var:',var_lin_comb_chi_monte_carlo)
 	
 		output_array = numpy.concatenate((eigenvalues, numpy.array([mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo])))
-		with open('test.npy', 'ab') as f:
+		with open(fname, 'ab') as f:
 			numpy.save(f, output_array)
-			print(output_array)
-	
+		
 	return
 
 
@@ -136,7 +137,6 @@ def calculate_extremes(n):
 		mean_three_term_extreme_error= 0
 		var_two_term_extreme_error = 0
 		var_three_tern_extreme_error =0
-		return
 	else:
 		mean_extreme, var_extreme = calculate_extreme_mean_and_var(eigenvalue_sum, n)
 		mu_Q = eigenvalue_sum / n
@@ -166,10 +166,6 @@ def calculate_extremes(n):
 
 if __name__ == '__main__':
 	
-	results_list = []
-	
-	sum_monte_carlo_variance = 0
-	
 	eigenvalue_sum = 1
 	
 	n=7 # number of eigenvalues
@@ -180,9 +176,9 @@ if __name__ == '__main__':
 	# create file with monte carlo expected value and variance
 	from pathlib import Path
 	# fname='monte_carlo-'+str(n)+'.npy'
-	fname = Path('test.npy')
+	fname = Path('monte_carlo_list_'+str(n)+'.npy')
 	
-	update_monte_carlo_file(n, fname, total_eigenvalue_draws=20,iterations_per_eigenvalue=10)
+	update_monte_carlo_file(n, fname, total_eigenvalue_draws=10000,iterations_per_eigenvalue=100000)
 	
 	max_mean_taylor_3_errors = 0
 	max_var_taylor_3_errors = 0
@@ -192,6 +188,8 @@ if __name__ == '__main__':
 	
 	var_taylor_2_errors = []
 	var_taylor_3_errors = []
+	results_list = []
+	
 	
 	with open(fname, 'rb') as fp:
 		counter = 0
@@ -222,7 +220,7 @@ if __name__ == '__main__':
 					max_mean_taylor_3_errors = abs(mean_taylor_3_errors[-1])
 					max_mean_taylor_3_eigenvalues = eigenvalues
 				
-				sum_monte_carlo_variance = sum_monte_carlo_variance + var_lin_comb_chi_monte_carlo
+			
 				
 				var_sqrt_taylor_2 = calculate_taylor_2_var_sqrt(eigenvalues)
 				# print('Var Taylor 2: ', var_sqrt_taylor_2)
@@ -244,7 +242,6 @@ if __name__ == '__main__':
 				print("EoF", counter)
 				break
 	
-	exit()
 	
 	lower_bound_mean_taylor_2_errors = numpy.min(mean_taylor_2_errors)
 	upper_bound_mean_taylor_2_errors = numpy.max(mean_taylor_2_errors)
@@ -259,7 +256,7 @@ if __name__ == '__main__':
 	upper_bound_var_taylor_3_errors = numpy.max(var_taylor_3_errors)
 	
 	print()
-	print(sum_monte_carlo_variance / 100)
+
 	print('Final result')
 	print('Mean taylor 2 errors: ', numpy.mean(mean_taylor_2_errors), numpy.std(mean_taylor_2_errors),
 		  numpy.min(mean_taylor_2_errors),
@@ -303,13 +300,13 @@ if __name__ == '__main__':
 				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'lower_bound_var_taylor_3_errors',
 				   'upper_bound_var_taylor_3_errors']
 	
-	with open('taylor_errors_test_' + str(n) + '.csv', 'w', ) as csvfile:
+	with open('taylor_errors_' + str(n) + '.csv', 'w', ) as csvfile:
 		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator='\n')
 		writer.writeheader()
 		writer.writerows(results_list)
 	
-	print(max_mean_taylor_3_eigenvalues)
-	print(max_var_taylor_3_eigenvalues)
+	print("Eigenvalue where mean has max:",max_mean_taylor_3_eigenvalues)
+	print("Eigenvalue where var has max", max_var_taylor_3_eigenvalues)
 	# open file in write mode
 	
 	max_mean_taylor_3_eigenvalues = numpy.around(max_mean_taylor_3_eigenvalues, decimals=3)
@@ -317,7 +314,3 @@ if __name__ == '__main__':
 	
 	results = [max_mean_taylor_3_eigenvalues, max_var_taylor_3_eigenvalues]
 	numpy.savetxt('taylor_max_eigenvalues_' + str(n) + '.csv', results)
-
-# read
-# result = np.loadtxt("results.txt")
-# print(result.tolist())
