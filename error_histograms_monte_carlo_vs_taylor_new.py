@@ -186,27 +186,6 @@ if __name__ == '__main__':
 	fname='test.npy'
 	update_monte_carlo_file(n, fname, total_eigenvalue_draws=20,iterations_per_eigenvalue=10)
 	
-	
-	with open(fname, 'rb') as fp:
-		num_lines = 0
-		while True:
-			try:
-				item = numpy.load(fp)
-				mean_lin_comb_chi_monte_carlo = item[-2]
-				var_lin_comb_chi_monte_carlo = item[-1]
-				#print(mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo)
-				eigenvalues = item[list(range(0,n))]
-				#print(eigenvalues, sum(eigenvalues))
-				#print(item)
-				num_lines = num_lines + 1
-			except:
-				print("EoF", num_lines)
-				break
-	
-	exit()
-	
-
-	
 	max_mean_taylor_3_errors = 0
 	max_var_taylor_3_errors = 0
 	
@@ -216,116 +195,106 @@ if __name__ == '__main__':
 	var_taylor_2_errors = []
 	var_taylor_3_errors = []
 	
-	for counter in range(10000):
-		
-		print(counter)
-		
-		eigenvalues = drs(n, eigenvalue_sum)
-		# eigenvalues=[0.1,0.9]
-		print()
-		print(eigenvalues)
-		
-		mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(
-			eigenvalues)
-		print('Monte carlo mean', mean_lin_comb_chi_monte_carlo, 'expec6ted mean', 0.1 ** 0.5 * (1 - 1 / 40))
-		print('Monte carlo var', var_lin_comb_chi_monte_carlo, 'expec6ted var', 0.1 * (1 / 20))
-		
-		mean_sqrt_taylor_2 = calculate_cumulant(1, eigenvalues) ** 0.5
-		mean_taylor_2_errors.append(
-			100 * (mean_sqrt_taylor_2 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
-		print('Mean taylor 2 error: ', mean_taylor_2_errors[-1], '%')
-		
-		mean_sqrt_taylor_3 = calculate_taylor_3_mean_sqrt(eigenvalues)
-		mean_taylor_3_errors.append(
-			100 * (mean_sqrt_taylor_3 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
-		print('Mean taylor 3 error: ', mean_taylor_3_errors[-1], '%')
-		
-		if abs(mean_taylor_3_errors[-1]) > max_mean_taylor_3_errors:
-			max_mean_taylor_3_errors = abs(mean_taylor_3_errors[-1])
-			max_mean_taylor_3_eigenvalues = eigenvalues
-		
-		sum_monte_carlo_variance = sum_monte_carlo_variance + var_lin_comb_chi_monte_carlo
-		
-		var_sqrt_taylor_2 = calculate_taylor_2_var_sqrt(eigenvalues)
-		# print('Var Taylor 2: ', var_sqrt_taylor_2)
-		var_taylor_2_errors.append(
-			100 * (var_sqrt_taylor_2 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
-		print('Var Taylor 2 error: ', var_taylor_2_errors[-1], '%')
-		
-		var_sqrt_taylor_3 = calculate_taylor_3_var_sqrt(eigenvalues)
-		# print('Taylor 3 variance: ', var_sqrt_taylor_3)
-		var_taylor_3_errors.append(
-			100 * (var_sqrt_taylor_3 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
-		print('Var Taylor 3  error: ', var_taylor_3_errors[-1], '%')
-		
-		if abs(var_taylor_3_errors[-1]) > max_var_taylor_3_errors:
-			max_var_taylor_3_errors = abs(var_taylor_3_errors[-1])
-			max_var_taylor_3_eigenvalues = eigenvalues
-		
-		print()
-		print(sum_monte_carlo_variance / 100)
-		print('Final result')
-		print('Mean taylor 2 errors: ', numpy.mean(mean_taylor_2_errors), numpy.std(mean_taylor_2_errors),
-			  numpy.min(mean_taylor_2_errors),
-			  numpy.max(mean_taylor_2_errors))
-		print('Mean taylor 3 errors: ', numpy.mean(mean_taylor_3_errors), numpy.std(mean_taylor_3_errors),
-			  numpy.min(mean_taylor_3_errors),
-			  numpy.max(mean_taylor_3_errors))
-		print('Var taylor 2 errors: ', numpy.mean(var_taylor_2_errors), numpy.std(var_taylor_2_errors),
-			  numpy.min(var_taylor_2_errors), numpy.max(var_taylor_2_errors))
-		print('Var taylor 3 errors: ', numpy.mean(var_taylor_3_errors), numpy.std(var_taylor_3_errors),
-			  numpy.min(var_taylor_3_errors), numpy.max(var_taylor_3_errors))
-		
-		lower_bound_mean_taylor_2_errors = numpy.min(mean_taylor_2_errors)
-		upper_bound_mean_taylor_2_errors = numpy.max(mean_taylor_2_errors)
-		
-		lower_bound_mean_taylor_3_errors = numpy.min(mean_taylor_3_errors)
-		upper_bound_mean_taylor_3_errors = numpy.max(mean_taylor_3_errors)
-		
-		lower_bound_var_taylor_2_errors = numpy.min(var_taylor_2_errors)
-		upper_bound_var_taylor_2_errors = numpy.max(var_taylor_2_errors)
-		
-		lower_bound_var_taylor_3_errors = numpy.min(var_taylor_3_errors)
-		upper_bound_var_taylor_3_errors = numpy.max(var_taylor_3_errors)
-		
-		if mean_extreme != 0:
-			mu_Q = eigenvalue_sum / n
-			answer = mu_Q ** 0.5
-			mean_two_term_extreme_error = 100 * (answer - mean_extreme) / mean_extreme
+	with open(fname, 'rb') as fp:
+		counter = 0
+		while True:
+			try:
+				item = numpy.load(fp)
+				mean_lin_comb_chi_monte_carlo = item[-2]
+				var_lin_comb_chi_monte_carlo = item[-1]
+				eigenvalues = item[list(range(0,n))]
 			
-			answer = (1 - 1 / (4 * n)) * mu_Q ** 0.5
-			mean_three_term_extreme_error = 100 * (answer - mean_extreme) / mean_extreme
-			
-			answer = mu_Q / (2 * n)
-			var_two_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
-			
-			answer = (mu_Q / n) * (1 / 2 - 7 / (8 * n) + 3 / (4 * n ** 2))
-			var_three_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
-		else:
-			mean_two_term_extreme_error = 0
-			mean_sqrt_taylor_3 = 0
-			var_two_term_extreme_error = 0
-			var_three_term_extreme_error = 0
-		
-		dict_item = {'n': n,
-					 'mean_mean_taylor_2_errors': numpy.mean(mean_taylor_2_errors),
-					 'mean_two_term_extreme_error': mean_two_term_extreme_error,
-					 'lower_bound_mean_taylor_2_errors': lower_bound_mean_taylor_2_errors,
-					 'upper_bound_mean_taylor_2_errors': upper_bound_mean_taylor_2_errors,
-					 'mean_mean_taylor_3_errors': numpy.mean(mean_taylor_3_errors),
-					 'mean_three_term_extreme_error': mean_three_term_extreme_error,
-					 'lower_bound_mean_taylor_3_errors': lower_bound_mean_taylor_3_errors,
-					 'upper_bound_mean_taylor_3_errors': upper_bound_mean_taylor_3_errors,
-					 'mean_var_taylor_2_errors': numpy.mean(var_taylor_2_errors),
-					 'var_two_term_extreme_error': var_two_term_extreme_error,
-					 'lower_bound_var_taylor_2_errors': lower_bound_var_taylor_2_errors,
-					 'upper_bound_var_taylor_2_errors': upper_bound_var_taylor_2_errors,
-					 'mean_var_taylor_3_errors': numpy.mean(var_taylor_3_errors),
-					 'var_three_term_extreme_error': var_three_term_extreme_error,
-					 'lower_bound_var_taylor_3_errors': lower_bound_var_taylor_3_errors,
-					 'upper_bound_var_taylor_3_errors': upper_bound_var_taylor_3_errors}
-		
-		results_list.append(dict_item)
+				counter = counter + 1
+				print('Eingevalue set number', counter)
+				
+				print('Monte carlo mean', mean_lin_comb_chi_monte_carlo, 'expected mean', 0.1 ** 0.5 * (1 - 1 / 40))
+				print('Monte carlo var', var_lin_comb_chi_monte_carlo, 'expected var', 0.1 * (1 / 20))
+				
+				mean_sqrt_taylor_2 = calculate_cumulant(1, eigenvalues) ** 0.5
+				mean_taylor_2_errors.append(
+					100 * (mean_sqrt_taylor_2 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
+				print('Mean taylor 2 error: ', mean_taylor_2_errors[-1], '%')
+				
+				mean_sqrt_taylor_3 = calculate_taylor_3_mean_sqrt(eigenvalues)
+				mean_taylor_3_errors.append(
+					100 * (mean_sqrt_taylor_3 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
+				print('Mean taylor 3 error: ', mean_taylor_3_errors[-1], '%')
+				
+				if abs(mean_taylor_3_errors[-1]) > max_mean_taylor_3_errors:
+					max_mean_taylor_3_errors = abs(mean_taylor_3_errors[-1])
+					max_mean_taylor_3_eigenvalues = eigenvalues
+				
+				sum_monte_carlo_variance = sum_monte_carlo_variance + var_lin_comb_chi_monte_carlo
+				
+				var_sqrt_taylor_2 = calculate_taylor_2_var_sqrt(eigenvalues)
+				# print('Var Taylor 2: ', var_sqrt_taylor_2)
+				var_taylor_2_errors.append(
+					100 * (var_sqrt_taylor_2 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
+				print('Var Taylor 2 error: ', var_taylor_2_errors[-1], '%')
+				
+				var_sqrt_taylor_3 = calculate_taylor_3_var_sqrt(eigenvalues)
+				# print('Taylor 3 variance: ', var_sqrt_taylor_3)
+				var_taylor_3_errors.append(
+					100 * (var_sqrt_taylor_3 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
+				print('Var Taylor 3  error: ', var_taylor_3_errors[-1], '%')
+				
+				if abs(var_taylor_3_errors[-1]) > max_var_taylor_3_errors:
+					max_var_taylor_3_errors = abs(var_taylor_3_errors[-1])
+					max_var_taylor_3_eigenvalues = eigenvalues
+					
+			except:
+				print("EoF", counter)
+				break
+	
+	exit()
+	
+	lower_bound_mean_taylor_2_errors = numpy.min(mean_taylor_2_errors)
+	upper_bound_mean_taylor_2_errors = numpy.max(mean_taylor_2_errors)
+	
+	lower_bound_mean_taylor_3_errors = numpy.min(mean_taylor_3_errors)
+	upper_bound_mean_taylor_3_errors = numpy.max(mean_taylor_3_errors)
+	
+	lower_bound_var_taylor_2_errors = numpy.min(var_taylor_2_errors)
+	upper_bound_var_taylor_2_errors = numpy.max(var_taylor_2_errors)
+	
+	lower_bound_var_taylor_3_errors = numpy.min(var_taylor_3_errors)
+	upper_bound_var_taylor_3_errors = numpy.max(var_taylor_3_errors)
+	
+	print()
+	print(sum_monte_carlo_variance / 100)
+	print('Final result')
+	print('Mean taylor 2 errors: ', numpy.mean(mean_taylor_2_errors), numpy.std(mean_taylor_2_errors),
+		  numpy.min(mean_taylor_2_errors),
+		  numpy.max(mean_taylor_2_errors))
+	print('Mean taylor 3 errors: ', numpy.mean(mean_taylor_3_errors), numpy.std(mean_taylor_3_errors),
+		  numpy.min(mean_taylor_3_errors),
+		  numpy.max(mean_taylor_3_errors))
+	print('Var taylor 2 errors: ', numpy.mean(var_taylor_2_errors), numpy.std(var_taylor_2_errors),
+		  numpy.min(var_taylor_2_errors), numpy.max(var_taylor_2_errors))
+	print('Var taylor 3 errors: ', numpy.mean(var_taylor_3_errors), numpy.std(var_taylor_3_errors),
+		  numpy.min(var_taylor_3_errors), numpy.max(var_taylor_3_errors))
+	
+	
+	
+	dict_item = {'n': n,
+				 'mean_mean_taylor_2_errors': numpy.mean(mean_taylor_2_errors),
+				 'mean_two_term_extreme_error': mean_two_term_extreme_error,
+				 'lower_bound_mean_taylor_2_errors': lower_bound_mean_taylor_2_errors,
+				 'upper_bound_mean_taylor_2_errors': upper_bound_mean_taylor_2_errors,
+				 'mean_mean_taylor_3_errors': numpy.mean(mean_taylor_3_errors),
+				 'mean_three_term_extreme_error': mean_three_term_extreme_error,
+				 'lower_bound_mean_taylor_3_errors': lower_bound_mean_taylor_3_errors,
+				 'upper_bound_mean_taylor_3_errors': upper_bound_mean_taylor_3_errors,
+				 'mean_var_taylor_2_errors': numpy.mean(var_taylor_2_errors),
+				 'var_two_term_extreme_error': var_two_term_extreme_error,
+				 'lower_bound_var_taylor_2_errors': lower_bound_var_taylor_2_errors,
+				 'upper_bound_var_taylor_2_errors': upper_bound_var_taylor_2_errors,
+				 'mean_var_taylor_3_errors': numpy.mean(var_taylor_3_errors),
+				 'var_three_term_extreme_error': var_three_term_extreme_error,
+				 'lower_bound_var_taylor_3_errors': lower_bound_var_taylor_3_errors,
+				 'upper_bound_var_taylor_3_errors': upper_bound_var_taylor_3_errors}
+	
+	results_list.append(dict_item)
 	
 	field_names = ['n', 'mean_mean_taylor_2_errors', 'mean_two_term_extreme_error', 'lower_bound_mean_taylor_2_errors',
 				   'upper_bound_mean_taylor_2_errors',
