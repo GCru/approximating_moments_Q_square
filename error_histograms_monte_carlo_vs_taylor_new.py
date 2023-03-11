@@ -6,9 +6,7 @@ from drs import drs
 
 def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eigenvalue=100000):
 	
-	from pathlib import Path
-	# fname='monte_carlo-'+str(n)+'.npy'
-	fname = Path('test.npy')
+	
 	if fname.is_file():
 		print('Exists')
 		with open(fname, 'rb') as fp:
@@ -38,7 +36,7 @@ def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eig
 		I = numpy.zeros((n, n))
 		numpy.fill_diagonal(I, 1)
 	
-		chi_list = numpy.empty([iterations])
+		chi_list = numpy.empty([iterations_per_eigenvalue])
 	
 		for count in range(iterations_per_eigenvalue):
 			z = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1 / n) * I)
@@ -180,10 +178,10 @@ if __name__ == '__main__':
 		var_three_term_extreme_error = calculate_extremes(n)
 
 	# create file with monte carlo expected value and variance
+	from pathlib import Path
+	# fname='monte_carlo-'+str(n)+'.npy'
+	fname = Path('test.npy')
 	
-	# first see if file exists and check how many items
-	#fname='monte_carlo-'+str(n)+'.npy'
-	fname='test.npy'
 	update_monte_carlo_file(n, fname, total_eigenvalue_draws=20,iterations_per_eigenvalue=10)
 	
 	max_mean_taylor_3_errors = 0
@@ -305,7 +303,7 @@ if __name__ == '__main__':
 				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'lower_bound_var_taylor_3_errors',
 				   'upper_bound_var_taylor_3_errors']
 	
-	with open('taylor_errors_new_' + str(n) + '.csv', 'w', ) as csvfile:
+	with open('taylor_errors_test_' + str(n) + '.csv', 'w', ) as csvfile:
 		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator='\n')
 		writer.writeheader()
 		writer.writerows(results_list)
