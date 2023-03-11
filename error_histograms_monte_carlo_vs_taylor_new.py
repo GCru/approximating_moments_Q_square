@@ -4,30 +4,58 @@ import csv
 from drs import drs
 
 
-def update_monte_carlo_file(n, required_iterations):
+def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eigenvalue=100000):
 	
-	eigenvalues = drs(n, 1)
+	from pathlib import Path
+	# fname='monte_carlo-'+str(n)+'.npy'
+	fname = Path('test.npy')
+	if fname.is_file():
+		print('Exists')
+		with open(fname, 'rb') as fp:
+			num_lines=0
+			while True:
+				try:
+					item = numpy.load(fp)
+					print(item)
+					num_lines= num_lines+1
+				except:
+					print("EoF", num_lines)
+					break
+			
+			#num_lines = sum(1 for line in fp)
+			#print('Total lines:', num_lines)  # 8
+			#for line in fp:
+			#	print(line)
+		total_remaining_eigenvalue_draws = total_eigenvalue_draws - num_lines
+	else:
+		print('Not found')
+		num_lines=0
+		total_remaining_eigenvalue_draws = total_eigenvalue_draws
+	
+	for count_eigenvalue_draws in range(total_remaining_eigenvalue_draws):
+		eigenvalues = drs(n, 1)
 
-	iterations_per_eigenvalue=100000
+		I = numpy.zeros((n, n))
+		numpy.fill_diagonal(I, 1)
 	
-	I = numpy.zeros((n, n))
-	numpy.fill_diagonal(I, 1)
+		chi_list = numpy.empty([iterations])
 	
-	chi_list = numpy.empty([iterations])
+		for count in range(iterations_per_eigenvalue):
+			z = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1 / n) * I)
+			# print('stuck', count)
+			chi_list[count] = (numpy.dot(eigenvalues, numpy.square(z))) ** 0.5
 	
-	for count in range(iterations_per_eigenvalue):
-		z = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1 / n) * I)
-		# print('stuck', count)
-		chi_list[count] = (numpy.dot(eigenvalues, numpy.square(z))) ** 0.5
+		mean_lin_comb_chi_monte_carlo = numpy.mean(chi_list)
+		var_lin_comb_chi_monte_carlo = numpy.var(chi_list)
 	
-	mean_lin_comb_chi_monte_carlo = numpy.mean(chi_list)
-	var_lin_comb_chi_monte_carlo = numpy.var(chi_list)
+		print('Eigenvalue_set: ', num_lines + count_eigenvalue_draws+1 )
 	
-	output_array = numpy.array([mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo])
-	with open('test.npy', 'ab') as f:
-		numpy.save(f, output_array)
+		output_array = numpy.concatenate((eigenvalues, numpy.array([mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo])))
+		with open('test.npy', 'ab') as f:
+			numpy.save(f, output_array)
+			print(output_array)
 	
-	return mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo
+	return
 
 
 def calculate_cumulant(k, eigenvalue_list):
@@ -111,26 +139,24 @@ if __name__ == '__main__':
 	eigenvalue_sum = 1
 	
 	n=7 # number of eigenvalues
-	iterations = 10
+
 	# create file with monte carlo expected value and variance
 	
 	# first see if file exists and check how many items
-	
-	from pathlib import Path
-	#fname='monte_carlo-'+str(n)+'npy'
-	fname= Path('test.npy')
-	if fname.is_file():
-		print('Exists')
-		with open(fname, 'rb') as fp:
-			num_lines = sum(1 for line in fp)
-			print('Total lines:', num_lines)  # 8
-			required_iterations = 10000-numlines
-	else:
-		print('Not found')
-		required_iterations = 10000
+	fname='monte_carlo-'+str(n)+'.npy'
+	update_monte_carlo_file(n, fname, total_eigenvalue_draws=20,iterations_per_eigenvalue=10)
 	exit()
 	
-	updated_monte_carlo_file(n, required_iterations)
+	with open(fname, 'rb') as fp:
+		num_lines = 0
+		
+		try:
+			while 1:
+				item = numpy.load(fp)
+				print(item)
+				num_lines = num_lines + 1
+		except:
+			print("EoF", num_lines)
 	mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(
 		eigenvalues)
 		
