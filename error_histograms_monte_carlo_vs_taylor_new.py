@@ -130,38 +130,16 @@ def calculate_extreme_mean_and_var(eigenvalue_sum, n):
 	return mean_extreme, var_extreme
 
 
-if __name__ == '__main__':
+def calculate_extremes(n):
 	
-	results_list = []
-	
-	sum_monte_carlo_variance = 0
-	
-	eigenvalue_sum = 1
-	
-	n=7 # number of eigenvalues
-
-	# create file with monte carlo expected value and variance
-	
-	# first see if file exists and check how many items
-	fname='monte_carlo-'+str(n)+'.npy'
-	update_monte_carlo_file(n, fname, total_eigenvalue_draws=20,iterations_per_eigenvalue=10)
-	exit()
-	
-	with open(fname, 'rb') as fp:
-		num_lines = 0
-		
-		try:
-			while 1:
-				item = numpy.load(fp)
-				print(item)
-				num_lines = num_lines + 1
-		except:
-			print("EoF", num_lines)
-	mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo = monte_carlo_simulations_lin_comb_chi(
-		eigenvalues)
-		
-		
-	if n < 102:
+	if n>102:
+		print('The value of n too large to calculate')
+		mean_two_term_extreme_error = 0
+		mean_three_term_extreme_error= 0
+		var_two_term_extreme_error = 0
+		var_three_tern_extreme_error =0
+		return
+	else:
 		mean_extreme, var_extreme = calculate_extreme_mean_and_var(eigenvalue_sum, n)
 		mu_Q = eigenvalue_sum / n
 		answer = mu_Q ** 0.5
@@ -172,26 +150,62 @@ if __name__ == '__main__':
 		
 		answer = (1 - 1 / (4 * n) + 1 / (2 * n * n)) * mu_Q ** 0.5
 		mean_four_term_extreme_error = 100 * (answer - mean_extreme) / mean_extreme
-		
+	
 		answer = mu_Q / (2 * n)
 		var_two_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
 		
 		answer = (mu_Q / n) * (1 / 2 - 7 / (8 * n) + 3 / (4 * n ** 2))
 		var_three_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
-	else:
-		mean_extreme = 0
-		var_extreme = 0
-		mean_two_term_extreme_error = 0
-		mean_three_term_extreme_error = 0
-		mean_four_term_extreme_error = 0
-		var_two_term_extreme_error = 0
-		var_three_term_extreme_error = 0
 	
-	print('Mean two term extreme error', mean_two_term_extreme_error)
-	print('Mean three term extreme error', mean_three_term_extreme_error)
-	print('Mean four term extreme error', mean_four_term_extreme_error)
-	print('Var two term extreme error', var_two_term_extreme_error)
-	print('Var three term extreme error', var_three_term_extreme_error)
+		print('Mean two term extreme error', mean_two_term_extreme_error)
+		print('Mean three term extreme error', mean_three_term_extreme_error)
+		print('Mean four term extreme error', mean_four_term_extreme_error)
+		print('Var two term extreme error', var_two_term_extreme_error)
+		print('Var three term extreme error', var_three_term_extreme_error)
+	
+	return mean_two_term_extreme_error, mean_three_term_extreme_error, var_two_term_extreme_error, var_three_term_extreme_error
+
+
+if __name__ == '__main__':
+	
+	results_list = []
+	
+	sum_monte_carlo_variance = 0
+	
+	eigenvalue_sum = 1
+	
+	n=7 # number of eigenvalues
+	
+	mean_two_term_extreme_error, mean_three_term_extreme_error, var_two_term_extreme_error, \
+		var_three_term_extreme_error = calculate_extremes(n)
+
+	# create file with monte carlo expected value and variance
+	
+	# first see if file exists and check how many items
+	#fname='monte_carlo-'+str(n)+'.npy'
+	fname='test.npy'
+	update_monte_carlo_file(n, fname, total_eigenvalue_draws=20,iterations_per_eigenvalue=10)
+	
+	
+	with open(fname, 'rb') as fp:
+		num_lines = 0
+		while True:
+			try:
+				item = numpy.load(fp)
+				mean_lin_comb_chi_monte_carlo = item[-2]
+				var_lin_comb_chi_monte_carlo = item[-1]
+				#print(mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo)
+				eigenvalues = item[list(range(0,n))]
+				#print(eigenvalues, sum(eigenvalues))
+				#print(item)
+				num_lines = num_lines + 1
+			except:
+				print("EoF", num_lines)
+				break
+	
+	exit()
+	
+
 	
 	max_mean_taylor_3_errors = 0
 	max_var_taylor_3_errors = 0
