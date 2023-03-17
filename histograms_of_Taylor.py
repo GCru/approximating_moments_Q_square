@@ -20,8 +20,8 @@ from bokeh_constants import *
 
 
 
-def draw_error_histogram(error_list, my_title=''):
-	frequency_list, bin_edges_list = make_histogram(error_list)
+def draw_error_histogram(error_list, my_title='', max_y=0.2):
+	frequency_list, bin_edges_list = make_histogram(error_list, bins=50)
 	
 	left_edges = bin_edges_list[:-1]
 	right_edges = bin_edges_list[1:]
@@ -48,7 +48,7 @@ def draw_error_histogram(error_list, my_title=''):
 	plot.xaxis.axis_label = 'Approximation error'
 	plot.yaxis.axis_label = 'Relative Frequency'
 	plot.yaxis[0].formatter = NumeralTickFormatter(format="0%")
-	plot.y_range = Range1d(0.0, 0.20)
+	plot.y_range = Range1d(0.0, max_y)
 	
 	plot.axis.axis_label_text_font_size = double_graph_axis_label_font_size
 	plot.xaxis.axis_label_text_font = font
@@ -137,12 +137,8 @@ def calculate_taylor_3_var_sqrt(eigenvalues):
 	
 	return term1 + term2 - term3
 
-
-if __name__ == '__main__':
-	
-
+def load_data_and_create_plots(n):
 	eigenvalue_sum = 1
-	n=2
 	
 	# create file with monte carlo expected value and variance
 	from pathlib import Path
@@ -166,6 +162,7 @@ if __name__ == '__main__':
 				var_lin_comb_chi_monte_carlo = item[-1]
 				eigenvalues = item[list(range(0, n))]
 				
+				print(item)
 				counter = counter + 1
 				print('Eingevalue set number', counter)
 				
@@ -174,47 +171,68 @@ if __name__ == '__main__':
 				
 				mean_sqrt_taylor_2 = calculate_cumulant(1, eigenvalues) ** 0.5
 				mean_taylor_2_errors.append(
-					100 * (mean_sqrt_taylor_2 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
+					(mean_sqrt_taylor_2 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
 				print('Mean taylor 2 error: ', mean_taylor_2_errors[-1], '%')
 				
 				mean_sqrt_taylor_3 = calculate_taylor_3_mean_sqrt(eigenvalues)
 				mean_taylor_3_errors.append(
-					100 * (mean_sqrt_taylor_3 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
+					(mean_sqrt_taylor_3 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
 				print('Mean taylor 3 error: ', mean_taylor_3_errors[-1], '%')
+				print('Here')
 				
-				if abs(mean_taylor_3_errors[-1]) > max_mean_taylor_3_errors:
-					max_mean_taylor_3_errors = abs(mean_taylor_3_errors[-1])
-					max_mean_taylor_3_eigenvalues = eigenvalues
-				
+				print('Then here')
 				var_sqrt_taylor_2 = calculate_taylor_2_var_sqrt(eigenvalues)
-				# print('Var Taylor 2: ', var_sqrt_taylor_2)
+				print('Var Taylor 2: ', var_sqrt_taylor_2)
 				var_taylor_2_errors.append(
-					100 * (var_sqrt_taylor_2 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
+					(var_sqrt_taylor_2 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
 				print('Var Taylor 2 error: ', var_taylor_2_errors[-1], '%')
 				
 				var_sqrt_taylor_3 = calculate_taylor_3_var_sqrt(eigenvalues)
 				# print('Taylor 3 variance: ', var_sqrt_taylor_3)
 				var_taylor_3_errors.append(
-					100 * (var_sqrt_taylor_3 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
+					(var_sqrt_taylor_3 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
 				print('Var Taylor 3  error: ', var_taylor_3_errors[-1], '%')
-				
-				if abs(var_taylor_3_errors[-1]) > max_var_taylor_3_errors:
-					max_var_taylor_3_errors = abs(var_taylor_3_errors[-1])
-					max_var_taylor_3_eigenvalues = eigenvalues
+			
+			
 			
 			except:
 				print("EoF", counter)
 				break
-		
-	plot_mean=draw_error_histogram(mean_taylor_3_errors,my_title=r"$${\bf E} \left [\sqrt{Q} \right ]$$")
-		
-	plot_var= draw_error_histogram(var_taylor_3_errors,my_title=r"$$\mathtt{Var}\left [\sqrt{Q} \right ]$$")
-		
-	the_row=row(plot_mean, plot_var)
+	
+	return mean_taylor_3_errors, var_taylor_3_errors
+
+
+
+if __name__ == '__main__':
+	
+
+	mean_taylor_3_errors_for_n_2, var_taylor_3_errors_for_n_2 = load_data_and_create_plots(2)
+	
+	plot_mean_for_2 = draw_error_histogram(mean_taylor_3_errors_for_n_2, my_title=r"$$n=2$$",max_y=0.2)
+	
+	plot_var_for_2 = draw_error_histogram(var_taylor_3_errors_for_n_2, my_title=r"$$n=2$$",max_y=0.12)
+	
+	mean_taylor_3_errors_for_n_10, var_taylor_3_errors_for_n_10 = load_data_and_create_plots(10)
+	
+	plot_mean_for_10 = draw_error_histogram(mean_taylor_3_errors_for_n_10,
+										   my_title=r"$$n=10$$", max_y=0.2)
+	
+	
+	plot_var_for_10 = draw_error_histogram(var_taylor_3_errors_for_n_10,
+										  my_title=r"$$n=10$$",max_y=0.12)
+	"""
+	the_row=row(plot_mean_for_2, plot_mean_for_10)
 		
 	export_plot = column(
-		Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Three-term Taylor expansion approximation errors</h2>", ),
+		Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Approximation errors: Three-term Taylor expansion for  $${\bf E} \left [\sqrt{Q} \right ]$$</h2>", ),
 			the_row)
+	"""
+	
+	the_row=row(plot_var_for_2, plot_var_for_10)
+
+	export_plot = column(
+			Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Approximation errors: Three-term Taylor expansion for  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h2>", ),
+				the_row)
 		
 	show(export_plot)
 		
