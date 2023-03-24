@@ -4,7 +4,7 @@ import csv
 from drs import drs
 
 
-def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eigenvalue=100000):
+def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eigenvalue=10000):
 	
 	
 	if fname.is_file():
@@ -168,7 +168,7 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	n=10 # number of eigenvalues
+	n=100 # number of eigenvalues
 	
 	mean_two_term_extreme_error, mean_three_term_extreme_error, var_two_term_extreme_error, \
 		var_three_term_extreme_error = calculate_extremes(n)

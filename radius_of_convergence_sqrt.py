@@ -12,6 +12,7 @@ from math import pi
 x = numpy.linspace(0, 6, 600)
 y = x**0.5
 
+#x=2.72
 x0=1.0  # expansion point)
 taylor_1 = x0**0.5
 taylor_2 = taylor_1+0.5*x0**(-0.5)*(x-x0)
@@ -19,6 +20,9 @@ taylor_3 = taylor_2-(1/8)*x0**(-3/2)*(x-x0)**2
 taylor_4 = taylor_3+(3/48)*x0**(-5/2)*(x-x0)**3
 taylor_5 = taylor_4-(15/(16*24))*x0**(-7/2)*(x-x0)**4
 taylor_6 = taylor_5+ (105/(32*120))*x0**(-9/2)*(x-x0)**5
+
+# check which Tayulor is best, by settin x = to various values above
+#print(abs(taylor_1-x**0.5), abs(taylor_2-x**0.5),abs(taylor_3-x**0.5), abs(taylor_4-x**0.5))
 
 p_left = figure(width=500, height=500, tools="",toolbar_location=None)
 p_left.x_range=Range1d(0,5)
