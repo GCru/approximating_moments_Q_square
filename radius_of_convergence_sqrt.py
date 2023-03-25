@@ -33,6 +33,11 @@ p_left.line(x, taylor_2, color="black", alpha=0.6, line_width=2, line_dash="dash
 p_left.line(x, taylor_3, color="black", alpha=0.6, line_width=2, line_dash="solid", legend_label="Three-term Taylor")
 p_left.line(x, taylor_4, color="black", alpha=0.6, line_width=2, line_dash='dotted',legend_label="Four-term Taylor")
 
+label_left = Label(
+			text=r"$$ \sqrt{x}$$", x=4.4, y=2.2)
+p_left.add_layout(label_left)
+
+
 #legend =Legend(items=[LegendItem(label=Label(text=r"$$\sqrt{x}$$"),renderers=[p_sqrt],index=0)])
 
 #p_left.add_layout(legend)
@@ -57,6 +62,11 @@ p_right.line(x, taylor_3, color="black", alpha=0.6, line_width=2, line_dash="sol
 p_right.line(x, taylor_4, color="black", alpha=0.6, line_width=2, line_dash='dotted', legend_label= "Four-term Taylor")
 p_right.line(x, taylor_5, color="black", alpha=0.6, line_width=2, line_dash='dotdash',legend_label= "Five-term Taylor")
 p_right.line(x, taylor_6, color="black", alpha=0.6, line_width=2, line_dash='dashed', legend_label= "Six-term Taylor")
+
+label_right = Label(
+			text=r"$$ \sqrt{x}$$", x=5.5, y=3)
+
+p_right.add_layout(label_right)
 
 p_right.legend.location="top_left"
 p_right.legend.label_text_font_size=bokeh_constants.double_graph_axis_label_font_size

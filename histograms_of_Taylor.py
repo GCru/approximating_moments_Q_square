@@ -199,41 +199,45 @@ def load_data_and_create_plots(n):
 				print("EoF", counter)
 				break
 	
-	return mean_taylor_3_errors, var_taylor_3_errors
+	return mean_taylor_3_errors, var_taylor_2_errors
 
 
 
 if __name__ == '__main__':
 	
 
-	mean_taylor_3_errors_for_n_2, var_taylor_3_errors_for_n_2 = load_data_and_create_plots(2)
+	mean_taylor_3_errors_for_n_2, var_taylor_2_errors_for_n_2 = load_data_and_create_plots(2)
 	
-	plot_mean_for_2 = draw_error_histogram(mean_taylor_3_errors_for_n_2, my_title=r"$$n=2$$",max_y=0.2)
+	plot_mean_for_2 = draw_error_histogram(mean_taylor_3_errors_for_n_2, my_title=r"$$n=2$$",max_y=0.16)
 	
-	plot_var_for_2 = draw_error_histogram(var_taylor_3_errors_for_n_2, my_title=r"$$n=2$$",max_y=0.12)
+	plot_var_for_2 = draw_error_histogram(var_taylor_2_errors_for_n_2, my_title=r"$$n=2$$",max_y=0.09)
 	
-	mean_taylor_3_errors_for_n_10, var_taylor_3_errors_for_n_10 = load_data_and_create_plots(10)
+	mean_taylor_3_errors_for_n_10, var_taylor_2_errors_for_n_10 = load_data_and_create_plots(10)
 	
 	plot_mean_for_10 = draw_error_histogram(mean_taylor_3_errors_for_n_10,
-										   my_title=r"$$n=10$$", max_y=0.2)
+										   my_title=r"$$n=10$$", max_y=0.16)
 	
 	
-	plot_var_for_10 = draw_error_histogram(var_taylor_3_errors_for_n_10,
-										  my_title=r"$$n=10$$",max_y=0.12)
+	plot_var_for_10 = draw_error_histogram(var_taylor_2_errors_for_n_10,
+										  my_title=r"$$n=10$$",max_y=0.09)
 	"""
 	the_row=row(plot_mean_for_2, plot_mean_for_10)
 		
 	export_plot = column(
 		Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Approximation errors: Three-term Taylor expansion for  $${\bf E} \left [\sqrt{Q} \right ]$$</h2>", ),
 			the_row)
-	"""
 	
+	show(export_plot)
+			
+	export_png(export_plot, filename="error_histograms_three_term_expectation.png")
+	exit()
+	"""
 	the_row=row(plot_var_for_2, plot_var_for_10)
 
 	export_plot = column(
-			Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Approximation errors: Three-term Taylor expansion for  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h2>", ),
+			Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Approximation errors: Two-term Taylor expansion for  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h2>", ),
 				the_row)
 		
 	show(export_plot)
 		
-	export_png(export_plot, filename="error_histograms.png")
+	export_png(export_plot, filename="error_histograms_two_term_var.png")
