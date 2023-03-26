@@ -220,22 +220,22 @@ if __name__ == '__main__':
 	
 	plot_var_for_10 = draw_error_histogram(var_taylor_2_errors_for_n_10,
 										  my_title=r"$$n=10$$",max_y=0.09)
-	"""
+	
 	the_row=row(plot_mean_for_2, plot_mean_for_10)
 		
 	export_plot = column(
-		Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Approximation errors: Three-term Taylor expansion for  $${\bf E} \left [\sqrt{Q} \right ]$$</h2>", ),
+		Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Approximation errors: Three-term Taylor expansion for  $${\bf E} \left [\sqrt{Q} \right ]$$</h2>", ),
 			the_row)
 	
 	show(export_plot)
 			
 	export_png(export_plot, filename="error_histograms_three_term_expectation.png")
 	exit()
-	"""
+	
 	the_row=row(plot_var_for_2, plot_var_for_10)
 
 	export_plot = column(
-			Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Approximation errors: Two-term Taylor expansion for  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h2>", ),
+			Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  Approximation errors: Two-term Taylor expansion for  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h2>", ),
 				the_row)
 		
 	show(export_plot)
