@@ -68,15 +68,15 @@ def draw_sum_of_chi_cdf(w, n):
 	if n==10:
 		plot0.title = r"$$n=10$$"
 	
-	plot0.title.text_font_size="16px" #bokeh_constants.double_graph_sub_title_font_size
+	plot0.title.text_font_size="22px" #bokeh_constants.double_graph_sub_title_font_size
 	
 	plot0.xaxis.axis_label = r"$$Q$$"
-	plot0.xaxis.axis_label_text_font_size = bokeh_constants.double_graph_axis_label_font_size
+	plot0.xaxis.axis_label_text_font_size = '22px' #bokeh_constants.double_graph_axis_label_font_size
 	
 	plot0.yaxis.axis_label = r"$$F_{Q}$$"
-	plot0.yaxis.axis_label_text_font_size = bokeh_constants.double_graph_axis_label_font_size
+	plot0.yaxis.axis_label_text_font_size = '22px' #bokeh_constants.double_graph_axis_label_font_size
 	
-	plot0.axis.major_label_text_font_size = bokeh_constants.double_graph_major_label_font_size
+	plot0.axis.major_label_text_font_size = '20px' #bokeh_constants.double_graph_major_label_font_size
 	
 	# Maximum
 	####################################################
@@ -92,7 +92,7 @@ def draw_sum_of_chi_cdf(w, n):
 	plot0.y_range = Range1d(0,1.002)
 	
 	label = Label(
-		text=r"$$\chi^2(1)$$", x=3.25,y=0.87)
+		text=r"$$\chi^2(1)$$", x=3.23,y=0.84, text_font_size='22px')
 		#x=300, y=300,
 		#x_units="screen", y_units="screen",
 	#)
@@ -146,13 +146,13 @@ def draw_sum_of_chi_cdf(w, n):
 	
 	if n==2:
 		label = Label(
-			text=r"$${\small \frac{1}{2}}\chi^2(2)$$", x=1.8, y=0.91)
+			text=r"$${\small \frac{1}{2}}\chi^2(2)$$", x=0.6, y=0.25, text_font_size='22px')
 		# x=300, y=300,
 		# x_units="screen", y_units="screen",
 		# )
 	else:
 		label = Label(
-			text=r"$${\small \frac{1}{10}}\chi^2(10)$$", x=0.75, y=0.91)
+			text=r"$${\small \frac{1}{10}}\chi^2(10)$$", x=0.9, y=0.25,text_font_size='22px')
 		
 	plot0.add_layout(label)
 	
@@ -192,7 +192,7 @@ if __name__ == '__main__':
 	#show(the_row)
 	
 	export_plot = column(
-		Div(text=r"<h2>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp $$\text{CDFs of a weighted sum of chi-squared variables}$$</h2>", ),
+		Div(text=r"<h1>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp $$\text{CDFs of a weighted sum of chi-squared variables}$$</h1>", ),
 		the_row)
 	
 	show(export_plot)
