@@ -35,7 +35,7 @@ def draw_error_histogram(error_list, my_title='', max_y=0.2):
 	
 	
 	the_title = Title(text=my_title, align='left',
-					 text_font=font, text_font_size="18px",
+					 text_font=font, text_font_size="22px",
 					 text_line_height=1, vertical_align='middle')
 	plot.add_layout(the_title, "above")
 	
@@ -45,16 +45,16 @@ def draw_error_histogram(error_list, my_title='', max_y=0.2):
 	plot.min_border_right = 20
 	plot.min_border_bottom = 30
 	
-	plot.xaxis.axis_label = 'Approximation error'
+	plot.xaxis.axis_label = 'Relative approximation error'
 	plot.yaxis.axis_label = 'Relative Frequency'
 	plot.yaxis[0].formatter = NumeralTickFormatter(format="0%")
 	plot.y_range = Range1d(0.0, max_y)
 	
-	plot.axis.axis_label_text_font_size = double_graph_axis_label_font_size
+	plot.axis.axis_label_text_font_size = '22px' # double_graph_axis_label_font_size
 	plot.xaxis.axis_label_text_font = font
 	plot.yaxis.axis_label_text_font = font
 	
-	plot.axis.major_label_text_font_size = double_graph_major_label_font_size
+	plot.axis.major_label_text_font_size = '20px' #double_graph_major_label_font_size
 	plot.xaxis.major_label_text_font = font
 	plot.yaxis.major_label_text_font = font
 	
@@ -224,18 +224,18 @@ if __name__ == '__main__':
 	the_row=row(plot_mean_for_2, plot_mean_for_10)
 		
 	export_plot = column(
-		Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Approximation errors: Three-term Taylor expansion for  $${\bf E} \left [\sqrt{Q} \right ]$$</h2>", ),
+		Div(text=r"<h1> &nbsp &nbsp &nbsp &nbsp &nbsp Relative approximation errors: Three-term Taylor expansion for  $${\bf E} \left [\sqrt{Q} \right ]$$</h1>", ),
 			the_row)
 	
 	show(export_plot)
 			
 	export_png(export_plot, filename="error_histograms_three_term_expectation.png")
-	exit()
+	
 	
 	the_row=row(plot_var_for_2, plot_var_for_10)
 
 	export_plot = column(
-			Div(text=r"<h2> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  Approximation errors: Two-term Taylor expansion for  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h2>", ),
+			Div(text=r"<h1> &nbsp &nbsp &nbsp &nbsp &nbsp Relative approximation errors: Two-term Taylor expansion for  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h1>", ),
 				the_row)
 		
 	show(export_plot)
