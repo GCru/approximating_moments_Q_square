@@ -21,6 +21,9 @@ taylor_4 = taylor_3+(3/48)*x0**(-5/2)*(x-x0)**3
 taylor_5 = taylor_4-(15/(16*24))*x0**(-7/2)*(x-x0)**4
 taylor_6 = taylor_5+ (105/(32*120))*x0**(-9/2)*(x-x0)**5
 
+
+#print('Minimum', numpy.min(taylor_4-y))
+#exit()
 # check which Tayulor is best, by settin x = to various values above
 #print(abs(taylor_1-x**0.5), abs(taylor_2-x**0.5),abs(taylor_3-x**0.5), abs(taylor_4-x**0.5))
 
