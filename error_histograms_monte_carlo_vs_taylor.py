@@ -4,7 +4,7 @@ import csv
 from drs import drs
 
 
-def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eigenvalue=10000):
+def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eigenvalue=100000):
 	
 	
 	if fname.is_file():
@@ -39,8 +39,10 @@ def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eig
 		chi_list = numpy.empty([iterations_per_eigenvalue])
 	
 		for count in range(iterations_per_eigenvalue):
-			z = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1 / n) * I)
+			#z = numpy.random.default_rng().multivariate_normal(numpy.zeros(n), (1 / n) * I)
 			# print('stuck', count)
+		
+			z = numpy.random.default_rng().normal(size=n)/(n**0.5)
 			chi_list[count] = (numpy.dot(eigenvalues, numpy.square(z))) ** 0.5
 	
 		mean_lin_comb_chi_monte_carlo = numpy.mean(chi_list)
@@ -136,7 +138,7 @@ def calculate_extremes(n):
 		mean_two_term_extreme_error = 0
 		mean_three_term_extreme_error= 0
 		var_two_term_extreme_error = 0
-		var_three_tern_extreme_error =0
+		var_three_term_extreme_error =0
 	else:
 		mean_extreme, var_extreme = calculate_extreme_mean_and_var(eigenvalue_sum, n)
 		mu_Q = eigenvalue_sum / n
@@ -168,7 +170,7 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	n=100 # number of eigenvalues
+	n=1000 # number of eigenvalues
 	
 	mean_two_term_extreme_error, mean_three_term_extreme_error, var_two_term_extreme_error, \
 		var_three_term_extreme_error = calculate_extremes(n)
@@ -176,7 +178,7 @@ if __name__ == '__main__':
 	# create file with monte carlo expected value and variance
 	from pathlib import Path
 	# fname='monte_carlo-'+str(n)+'.npy'
-	fname = Path('monte_carlo_list_'+str(n)+'.npy')
+	fname = Path('monte_carlo_list_'+str(n)+'_simple.npy')
 	
 	update_monte_carlo_file(n, fname, total_eigenvalue_draws=10000,iterations_per_eigenvalue=100000)
 	
@@ -300,10 +302,10 @@ if __name__ == '__main__':
 				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'lower_bound_var_taylor_3_errors',
 				   'upper_bound_var_taylor_3_errors']
 	
-	with open('taylor_errors_' + str(n) + '.csv', 'w', ) as csvfile:
-		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator='\n')
-		writer.writeheader()
-		writer.writerows(results_list)
+	#with open('taylor_errors_' + str(n) + '_simple.csv', 'w', ) as csvfile:
+	#	writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator='\n')
+	#	writer.writeheader()
+	#	writer.writerows(results_list)
 	
 	print("Eigenvalue where mean has max:",max_mean_taylor_3_eigenvalues)
 	print("Eigenvalue where var has max", max_var_taylor_3_eigenvalues)
@@ -313,4 +315,8 @@ if __name__ == '__main__':
 	max_var_taylor_3_eigenvalues = numpy.around(max_var_taylor_3_eigenvalues, decimals=3)
 	
 	results = [max_mean_taylor_3_eigenvalues, max_var_taylor_3_eigenvalues]
-	numpy.savetxt('taylor_max_eigenvalues_' + str(n) + '.csv', results)
+	numpy.savetxt('taylor_max_eigenvalues_' + str(n) + '_simple.csv', results)
+
+	the_sorted_list= numpy.sort(var_taylor_2_errors)
+	
+	print(the_sorted_list[0:10])
