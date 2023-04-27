@@ -180,7 +180,7 @@ if __name__ == '__main__':
 	# fname='monte_carlo-'+str(n)+'.npy'
 	fname = Path('monte_carlo_list_'+str(n)+'_simple.npy')
 	
-	update_monte_carlo_file(n, fname, total_eigenvalue_draws=10000,iterations_per_eigenvalue=100000)
+	update_monte_carlo_file(n, fname, total_eigenvalue_draws=2000,iterations_per_eigenvalue=100000)
 	
 	max_mean_taylor_3_errors = 0
 	max_var_taylor_3_errors = 0
@@ -302,10 +302,10 @@ if __name__ == '__main__':
 				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'lower_bound_var_taylor_3_errors',
 				   'upper_bound_var_taylor_3_errors']
 	
-	#with open('taylor_errors_' + str(n) + '_simple.csv', 'w', ) as csvfile:
-	#	writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator='\n')
-	#	writer.writeheader()
-	#	writer.writerows(results_list)
+	with open('taylor_errors_' + str(n) + '_simple.csv', 'w', ) as csvfile:
+		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator='\n')
+		writer.writeheader()
+		writer.writerows(results_list)
 	
 	print("Eigenvalue where mean has max:",max_mean_taylor_3_eigenvalues)
 	print("Eigenvalue where var has max", max_var_taylor_3_eigenvalues)
@@ -315,8 +315,10 @@ if __name__ == '__main__':
 	max_var_taylor_3_eigenvalues = numpy.around(max_var_taylor_3_eigenvalues, decimals=3)
 	
 	results = [max_mean_taylor_3_eigenvalues, max_var_taylor_3_eigenvalues]
-	numpy.savetxt('taylor_max_eigenvalues_' + str(n) + '_simple.csv', results)
+	numpy.savetxt('taylor_max_eigenvalues_' + str(n) + '_simple1.csv', results)
 
 	the_sorted_list= numpy.sort(var_taylor_2_errors)
 	
 	print(the_sorted_list[0:10])
+	
+	print(the_sorted_list[-10:])
