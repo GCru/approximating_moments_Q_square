@@ -192,10 +192,10 @@ if __name__ == '__main__':
 	#show(the_row)
 	
 	export_plot = column(
-		Div(text=r"<h1>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp $$\text{CDFs of a weighted sum of chi-squared variables}$$</h1>", ),
+		Div(text=r"<h1>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  $$\text{CDFs of linear combinations of chi-squared variables}$$</h1>", ),
 		the_row)
 	
 	show(export_plot)
 	
-	export_png(export_plot, filename="CDFs_weighted_chi_squares.png")
+	export_png(export_plot, filename="CDFs_linear_combination_chi_squares.png")
 	
