@@ -5,7 +5,15 @@ from drs import drs
 
 
 def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eigenvalue=100000):
-	
+	""" Eigenvalues summing to 1 are drawn randomly using the DirichletRescaling.
+		For this eigenvaues set E[Q^0.5] and Var[Q^0.5] is caluulated
+		The eigenvalue set as well as these two values are then stored to a file.
+	:param n: Number of eigenvalues
+	:param fname:
+	:param total_eigenvalue_draws:
+	:param iterations_per_eigenvalue:
+	:return:
+	"""
 	
 	if fname.is_file():
 		print('Appending to an existing file')
@@ -49,8 +57,9 @@ def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eig
 		var_lin_comb_chi_monte_carlo = numpy.var(chi_list)
 	
 		print('Eigenvalue set number: ', num_lines + count_eigenvalue_draws+1)
-		print('Eigenvalue set:', eigenvalues)
+		print('Eigenvalue set:', eigenvalues, sum(eigenvalues))
 		print('Mean:',mean_lin_comb_chi_monte_carlo, 'Var:',var_lin_comb_chi_monte_carlo)
+		print('Relative mean:', 1-mean_lin_comb_chi_monte_carlo/n**0.5)
 	
 		output_array = numpy.concatenate((eigenvalues, numpy.array([mean_lin_comb_chi_monte_carlo, var_lin_comb_chi_monte_carlo])))
 		with open(fname, 'ab') as f:
@@ -170,17 +179,19 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	n=1000 # number of eigenvalues
+	n=2 # number of eigenvalues
+	
+	# So in this script m_Q = 1/n
 	
 	mean_two_term_extreme_error, mean_three_term_extreme_error, var_two_term_extreme_error, \
 		var_three_term_extreme_error = calculate_extremes(n)
 
-	# create file with monte carlo expected value and variance
+	# Create monte carlo file random sets of eigenvalues and their associated E[Q**0.5] and Var[Q**0.5]
 	from pathlib import Path
 	# fname='monte_carlo-'+str(n)+'.npy'
-	fname = Path('monte_carlo_list_'+str(n)+'_simple.npy')
+	fname = Path('monte_carlo_list_'+str(n)+'.npy')
 	
-	update_monte_carlo_file(n, fname, total_eigenvalue_draws=2000,iterations_per_eigenvalue=100000)
+	update_monte_carlo_file(n, fname, total_eigenvalue_draws=10000,iterations_per_eigenvalue=100000)
 	
 	max_mean_taylor_3_errors = 0
 	max_var_taylor_3_errors = 0
@@ -192,6 +203,9 @@ if __name__ == '__main__':
 	var_taylor_3_errors = []
 	results_list = []
 	
+	# calculate what is the smallest E[Q**0.5] relative to mu_Q**0.5 = 1/n^**0.5
+	smallest_relative_mean_lin_comb_chi_monte_carlo = 1
+	smallest_relative_mean_eigenvalue_set =[]
 	
 	with open(fname, 'rb') as fp:
 		counter = 0
@@ -199,8 +213,15 @@ if __name__ == '__main__':
 			try:
 				item = numpy.load(fp)
 				mean_lin_comb_chi_monte_carlo = item[-2]
+				
 				var_lin_comb_chi_monte_carlo = item[-1]
 				eigenvalues = item[list(range(0,n))]
+				
+				dummy = mean_lin_comb_chi_monte_carlo /(1/(n ** 0.5))
+				if dummy < smallest_relative_mean_lin_comb_chi_monte_carlo:
+					smallest_relative_mean_lin_comb_chi_monte_carlo = dummy
+					smallest_relative_mean_eigenvalue_set =  eigenvalues
+					
 			
 				counter = counter + 1
 				print('Eingevalue set number', counter)
@@ -257,7 +278,9 @@ if __name__ == '__main__':
 	lower_bound_var_taylor_3_errors = numpy.min(var_taylor_3_errors)
 	upper_bound_var_taylor_3_errors = numpy.max(var_taylor_3_errors)
 	
-	print()
+	print('Smallest Monte Carlo relative mean: ', smallest_relative_mean_lin_comb_chi_monte_carlo)
+	print('With their eigenvalues: ', smallest_relative_mean_eigenvalue_set)
+	print('3 term Taylor mean', calculate_taylor_3_mean_sqrt(smallest_relative_mean_eigenvalue_set))
 
 	print('Final result')
 	print('Mean taylor 2 errors: ', numpy.mean(mean_taylor_2_errors), numpy.std(mean_taylor_2_errors),
