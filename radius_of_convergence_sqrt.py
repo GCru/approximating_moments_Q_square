@@ -67,7 +67,7 @@ p_right.line(x, taylor_5, color="black", alpha=0.6, line_width=2, line_dash='dot
 p_right.line(x, taylor_6, color="black", alpha=0.6, line_width=2, line_dash='dashed', legend_label= "Six-term Taylor")
 
 label_right = Label(
-			text=r"$$ \sqrt{x}$$", x=5.5, y=3, text_font_size='22px')
+			text=r"$$ \sqrt{x}$$", x=5.4, y=3, text_font_size='22px')
 
 p_right.add_layout(label_right)
 
