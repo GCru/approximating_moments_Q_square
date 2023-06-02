@@ -8,7 +8,8 @@ from scipy import optimize
 
 from momentchi2 import hbe, lpb4,sw,wf
 from drs import drs
-from imhoff import imhoff
+from shared_ import imhoff
+
 
 import bokeh_constants
 from bokeh.plotting import figure, output_file, show

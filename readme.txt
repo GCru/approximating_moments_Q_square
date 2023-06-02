@@ -15,7 +15,7 @@
 
 6. The script 'minimum_of_eigenvalue_expressions' double chacks Appendix E
 
-7.  The script 'check_Taylor_approximations', 'examine_cov_matrix_behavious' and 'test_marchenko_pastur',
+7.  The script 'check_Taylor_approximations', 'examine_cov_matrix_behavious' and 'test_marchenko_pastur', 'linear_combinations_of_chi_square',
     'compare_chi_and_gamma', 'compare_sum_of_chi_squares' were used
     to check and aid understanding.
 
