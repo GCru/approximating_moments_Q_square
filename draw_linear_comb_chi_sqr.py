@@ -8,7 +8,7 @@ from scipy import optimize
 
 from momentchi2 import hbe, lpb4,sw,wf
 from drs import drs
-from shared_ import imhoff
+from imhoff_script import imhoff
 
 
 import bokeh_constants
