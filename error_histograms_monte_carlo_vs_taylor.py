@@ -154,7 +154,7 @@ def calculate_extreme_mean_and_var(eigenvalue_sum, n):
 	var_extreme = mu_Q * (1 - var_extreme / n)
 	
 	# print(var_extreme, var_extreme / mu_Q)
-	
+	print(mu_Q)
 	return mean_extreme, var_extreme
 
 
@@ -185,7 +185,12 @@ def calculate_extremes(eigenvalue_sum, n):
 		var_three_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
 		
 		answer = mu_Q / (2 * n)*(1-1/(8*n))
-		var_two_term_adjusted_error = 100 * (answer - var_extreme) / var_extreme
+		var_two_term_adjusted_extreme_error = 100 * (answer - var_extreme) / var_extreme
+		
+		#print('***************', var_two_term_adjusted_extreme_error, answer, var_extreme)
+		
+		#print(answer*2, var_extreme*2)
+		#input()
 	
 		print('Mean two term extreme error', mean_two_term_extreme_error)
 		print('Mean three term extreme error', mean_three_term_extreme_error)
@@ -201,7 +206,7 @@ if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	n=8 # number of eigenvalues
+	n=100 # number of eigenvalues
 	
 	# So in this script m_Q = 1/n
 	
