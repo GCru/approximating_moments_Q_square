@@ -91,6 +91,8 @@ def calculate_taylor_2_var_sqrt(eigenvalues):
 
 	var_sqrt_wVw_taylor_2 = calculate_cumulant(2, eigenvalues) / (4 * calculate_cumulant(1, eigenvalues))
 	
+	
+	
 	# print(var_sqrt_wVw_taylor_2)
 	# input('aha')
 	return var_sqrt_wVw_taylor_2
@@ -99,7 +101,13 @@ def calculate_taylor_2_var_sqrt(eigenvalues):
 def calculate_taylor_2_adjusted_var_sqrt(eigenvalues):
 	
 	mu_Q = sum(eigenvalues)/len(eigenvalues)
-	var_sqrt_wVw_taylor_2_adjusted = calculate_taylor_2_var_sqrt(eigenvalues)*(1 - 1/(4*mu_Q))
+	var_sqrt_wVw_taylor_2_adjusted = calculate_taylor_2_var_sqrt(eigenvalues)*(1 - calculate_taylor_2_var_sqrt(eigenvalues)/(4*mu_Q))
+	
+	# check
+	#check_value = mu_Q-calculate_taylor_3_mean_sqrt(eigenvalues)**2
+	
+	#print('check', var_sqrt_wVw_taylor_2_adjusted, check_value)
+	#input()
 	
 	# print(var_sqrt_wVw_taylor_2)
 	# input('aha')
@@ -175,6 +183,9 @@ def calculate_extremes(eigenvalue_sum, n):
 		
 		answer = (mu_Q / n) * (1 / 2 - 7 / (8 * n) + 3 / (4 * n ** 2))
 		var_three_term_extreme_error = 100 * (answer - var_extreme) / var_extreme
+		
+		answer = mu_Q / (2 * n)*(1-1/(8*n))
+		var_two_term_adjusted_error = 100 * (answer - var_extreme) / var_extreme
 	
 		print('Mean two term extreme error', mean_two_term_extreme_error)
 		print('Mean three term extreme error', mean_three_term_extreme_error)
@@ -182,30 +193,30 @@ def calculate_extremes(eigenvalue_sum, n):
 		print('Var two term extreme error', var_two_term_extreme_error)
 		print('Var three term extreme error', var_three_term_extreme_error)
 	
-	return mean_two_term_extreme_error, mean_three_term_extreme_error, var_two_term_extreme_error, var_three_term_extreme_error
+	return mean_two_term_extreme_error, mean_three_term_extreme_error, var_two_term_extreme_error,\
+		   var_three_term_extreme_error, var_two_term_adjusted_extreme_error
 
 
 if __name__ == '__main__':
 	
 	eigenvalue_sum = 1
 	
-	n=2 # number of eigenvalues
+	n=8 # number of eigenvalues
 	
 	# So in this script m_Q = 1/n
 	
 	mean_two_term_extreme_error, mean_three_term_extreme_error, var_two_term_extreme_error, \
-		var_three_term_extreme_error = calculate_extremes(eigenvalue_sum, n)
-
-	var_two_term_adjusted_extreme_error =0
+		var_three_term_extreme_error, var_two_term_adjusted_extreme_error = calculate_extremes(eigenvalue_sum, n)
+	
 	# Create monte carlo file random sets of eigenvalues and their associated E[Q**0.5] and Var[Q**0.5]
 	from pathlib import Path
 	# fname='monte_carlo-'+str(n)+'.npy'
-	fname = Path('monte_carlo_list_'+str(n)+'.npy')
+	fname = Path('monte_carlo_1_list_'+str(n)+'_eigenvalues.npy')
 	
 	update_monte_carlo_file(n, fname, total_eigenvalue_draws=10000,iterations_per_eigenvalue=100000)
 	
 	max_mean_taylor_3_errors = 0
-	max_var_taylor_3_errors = 0
+	max_var_taylor_2_adjusted_errors = 0
 	
 	mean_taylor_2_errors = []
 	mean_taylor_3_errors = []
@@ -251,7 +262,7 @@ if __name__ == '__main__':
 					100 * (mean_sqrt_taylor_3 - mean_lin_comb_chi_monte_carlo) / mean_lin_comb_chi_monte_carlo)
 				print('Mean taylor 3 error: ', mean_taylor_3_errors[-1], '%')
 				
-				# get eigenvalues for max_var_taylor_3_errors
+				# get eigenvalues for max_mean_taylor_3_errors
 				if abs(mean_taylor_3_errors[-1]) > max_mean_taylor_3_errors:
 					max_mean_taylor_3_errors = abs(mean_taylor_3_errors[-1])
 					max_mean_taylor_3_eigenvalues = eigenvalues
@@ -275,10 +286,10 @@ if __name__ == '__main__':
 					100 * (var_sqrt_taylor_3 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
 				print('Var Taylor 3  error: ', var_taylor_3_errors[-1], '%')
 				
-				# get eigenvalues for max_var_taylor_3_errors
-				if abs(var_taylor_3_errors[-1]) > max_var_taylor_3_errors:
-					max_var_taylor_3_errors = abs(var_taylor_3_errors[-1])
-					max_var_taylor_3_eigenvalues = eigenvalues
+				# get eigenvalues for max_var_taylor_2_adjusted_errors
+				if abs(var_taylor_2_adjusted_errors[-1]) > max_var_taylor_2_adjusted_errors:
+					max_var_taylor_2_adjusted_errors = abs(var_taylor_2_adjusted_errors[-1])
+					max_var_taylor_2_adjusted_eigenvalues = eigenvalues
 					
 			except:
 				print("EoF", counter)
@@ -356,20 +367,20 @@ if __name__ == '__main__':
 				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'lower_bound_var_taylor_3_errors',
 				   'upper_bound_var_taylor_3_errors']
 	
-	with open('taylor_errors_' + str(n) + '_new.csv', 'w', ) as csvfile:
+	with open('taylor_errors_1_with_' + str(n) + '_eigenvalues.csv', 'w', ) as csvfile:
 		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator='\n')
 		writer.writeheader()
 		writer.writerows(results_list)
 	
 	print("Eigenvalue where mean has max:",max_mean_taylor_3_eigenvalues)
-	print("Eigenvalue where var has max", max_var_taylor_3_eigenvalues)
+	print("Eigenvalue where var has max", max_var_taylor_2_adjusted_eigenvalues)
 	# open file in write mode
 	
 	max_mean_taylor_3_eigenvalues = numpy.around(max_mean_taylor_3_eigenvalues, decimals=3)
-	max_var_taylor_3_eigenvalues = numpy.around(max_var_taylor_3_eigenvalues, decimals=3)
+	max_var_taylor_3_eigenvalues = numpy.around(max_var_taylor_2_adjusted_eigenvalues, decimals=3)
 	
-	results = [max_mean_taylor_3_eigenvalues, max_var_taylor_3_eigenvalues]
-	numpy.savetxt('taylor_max_eigenvalues_' + str(n) + '_new.csv', results)
+	results = [max_mean_taylor_3_eigenvalues, max_var_taylor_2_adjusted_eigenvalues]
+	numpy.savetxt('taylor_max_errors_eigenvalues_1_if_' + str(n) + '_eigenvalues.csv', results)
 
 	the_sorted_list= numpy.sort(var_taylor_2_errors)
 	
