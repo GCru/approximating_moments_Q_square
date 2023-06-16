@@ -166,6 +166,7 @@ def calculate_extremes(eigenvalue_sum, n):
 		mean_three_term_extreme_error= 0
 		var_two_term_extreme_error = 0
 		var_three_term_extreme_error =0
+		var_two_term_adjusted_extreme_error =0
 	else:
 		mean_extreme, var_extreme = calculate_extreme_mean_and_var(eigenvalue_sum, n)
 		mu_Q = eigenvalue_sum / n
@@ -204,9 +205,10 @@ def calculate_extremes(eigenvalue_sum, n):
 
 if __name__ == '__main__':
 	
+	list_nr =2 # says which set of random eigenvalues
 	eigenvalue_sum = 1
 	
-	n=100 # number of eigenvalues
+	n=10 # number of eigenvalues
 	
 	# So in this script m_Q = 1/n
 	
@@ -216,7 +218,7 @@ if __name__ == '__main__':
 	# Create monte carlo file random sets of eigenvalues and their associated E[Q**0.5] and Var[Q**0.5]
 	from pathlib import Path
 	# fname='monte_carlo-'+str(n)+'.npy'
-	fname = Path('monte_carlo_1_list_'+str(n)+'_eigenvalues.npy')
+	fname = Path('monte_carlo_'+str(list_nr)+'_list_'+str(n)+'_eigenvalues.npy')
 	
 	update_monte_carlo_file(n, fname, total_eigenvalue_draws=10000,iterations_per_eigenvalue=100000)
 	
@@ -280,10 +282,13 @@ if __name__ == '__main__':
 				print('Var Taylor 2 error: ', var_taylor_2_errors[-1], '%')
 				
 				var_sqrt_taylor_2_adjusted = calculate_taylor_2_adjusted_var_sqrt(eigenvalues)
-				# print('Var Taylor 2: ', var_sqrt_taylor_2)
+				
 				var_taylor_2_adjusted_errors.append(
 					100 * (var_sqrt_taylor_2_adjusted - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
 				print('Var Taylor adjusted 2 error: ', var_taylor_2_adjusted_errors[-1], '%')
+				if  True: #var_taylor_2_adjusted_errors[-1]<0:
+					print('Var Taylor 2 adjusted: ', var_sqrt_taylor_2_adjusted, var_lin_comb_chi_monte_carlo)
+					#input()
 				
 				var_sqrt_taylor_3 = calculate_taylor_3_var_sqrt(eigenvalues)
 				# print('Taylor 3 variance: ', var_sqrt_taylor_3)
@@ -372,7 +377,7 @@ if __name__ == '__main__':
 				   'mean_var_taylor_3_errors', 'var_three_term_extreme_error', 'lower_bound_var_taylor_3_errors',
 				   'upper_bound_var_taylor_3_errors']
 	
-	with open('taylor_errors_1_with_' + str(n) + '_eigenvalues.csv', 'w', ) as csvfile:
+	with open('taylor_errors_'+str(list_nr)+'_with_' + str(n) + '_eigenvalues.csv', 'w', ) as csvfile:
 		writer = csv.DictWriter(csvfile, fieldnames=field_names, lineterminator='\n')
 		writer.writeheader()
 		writer.writerows(results_list)
@@ -385,7 +390,7 @@ if __name__ == '__main__':
 	max_var_taylor_3_eigenvalues = numpy.around(max_var_taylor_2_adjusted_eigenvalues, decimals=3)
 	
 	results = [max_mean_taylor_3_eigenvalues, max_var_taylor_2_adjusted_eigenvalues]
-	numpy.savetxt('taylor_max_errors_eigenvalues_1_if_' + str(n) + '_eigenvalues.csv', results)
+	numpy.savetxt('taylor_max_errors_eigenvalues_'+str(list_nr)+'_if_' + str(n) + '_eigenvalues.csv', results)
 
 	the_sorted_list= numpy.sort(var_taylor_2_errors)
 	
