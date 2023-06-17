@@ -205,10 +205,10 @@ def calculate_extremes(eigenvalue_sum, n):
 
 if __name__ == '__main__':
 	
-	list_nr =2 # says which set of random eigenvalues
+	list_nr =1 # says which set of random eigenvalues
 	eigenvalue_sum = 1
 	
-	n=10 # number of eigenvalues
+	n=500 # number of eigenvalues
 	
 	# So in this script m_Q = 1/n
 	

@@ -113,6 +113,22 @@ def calculate_taylor_2_var_sqrt(eigenvalues):
 	return var_sqrt_wVw_taylor_2
 
 
+def calculate_taylor_2_adjusted_var_sqrt(eigenvalues):
+	mu_Q = sum(eigenvalues) / len(eigenvalues)
+	var_sqrt_wVw_taylor_2_adjusted = calculate_taylor_2_var_sqrt(eigenvalues) * (
+				1 - calculate_taylor_2_var_sqrt(eigenvalues) / (4 * mu_Q))
+	
+	# check
+	# check_value = mu_Q-calculate_taylor_3_mean_sqrt(eigenvalues)**2
+	
+	# print('check', var_sqrt_wVw_taylor_2_adjusted, check_value)
+	# input()
+	
+	# print(var_sqrt_wVw_taylor_2)
+	# input('aha')
+	return var_sqrt_wVw_taylor_2_adjusted
+
+
 def calculate_taylor_3_var_sqrt(eigenvalues):
 	kappa_list = []
 	
@@ -144,13 +160,14 @@ def load_data_and_create_plots(n):
 	from pathlib import Path
 	
 	# fname='monte_carlo-'+str(n)+'.npy'
-	fname = Path('monte_carlo_list_' + str(n) + '.npy')
+	fname = Path('monte_carlo_1_list_' + str(n) + '_eigenvalues.npy')
 	
 	mean_taylor_2_errors = []
 	mean_taylor_3_errors = []
 	
 	var_taylor_2_errors = []
 	var_taylor_3_errors = []
+	var_taylor_2_adjusted_errors = []
 	results_list = []
 	
 	with open(fname, 'rb') as fp:
@@ -187,6 +204,13 @@ def load_data_and_create_plots(n):
 					(var_sqrt_taylor_2 - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
 				print('Var Taylor 2 error: ', var_taylor_2_errors[-1], '%')
 				
+				var_sqrt_taylor_2_adjusted = calculate_taylor_2_adjusted_var_sqrt(eigenvalues)
+				print('Var Taylor 2 adjusted: ', var_sqrt_taylor_2_adjusted)
+				var_taylor_2_adjusted_errors.append(
+					(var_sqrt_taylor_2_adjusted - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
+				print('Var Taylor adjusted 2 error: ', var_taylor_2_adjusted_errors[-1], '%')
+				
+				
 				var_sqrt_taylor_3 = calculate_taylor_3_var_sqrt(eigenvalues)
 				# print('Taylor 3 variance: ', var_sqrt_taylor_3)
 				var_taylor_3_errors.append(
@@ -199,45 +223,45 @@ def load_data_and_create_plots(n):
 				print("EoF", counter)
 				break
 	
-	return mean_taylor_3_errors, var_taylor_2_errors
+	return mean_taylor_3_errors, var_taylor_2_adjusted_errors
 
 
 
 if __name__ == '__main__':
 	
 
-	mean_taylor_3_errors_for_n_2, var_taylor_2_errors_for_n_2 = load_data_and_create_plots(2)
+	mean_taylor_3_errors_for_n_2, var_taylor_2_adjusted_errors_for_n_2 = load_data_and_create_plots(2)
 	
 	plot_mean_for_2 = draw_error_histogram(mean_taylor_3_errors_for_n_2, my_title=r"$$n=2$$",max_y=0.16)
 	
-	plot_var_for_2 = draw_error_histogram(var_taylor_2_errors_for_n_2, my_title=r"$$n=2$$",max_y=0.09)
+	plot_var_for_2 = draw_error_histogram(var_taylor_2_adjusted_errors_for_n_2, my_title=r"$$n=2$$",max_y=0.09)
 	
-	mean_taylor_3_errors_for_n_10, var_taylor_2_errors_for_n_10 = load_data_and_create_plots(10)
+	mean_taylor_3_errors_for_n_10, var_taylor_2_adjusted_errors_for_n_10 = load_data_and_create_plots(10)
 	
 	plot_mean_for_10 = draw_error_histogram(mean_taylor_3_errors_for_n_10,
 										   my_title=r"$$n=10$$", max_y=0.16)
 	
 	
-	plot_var_for_10 = draw_error_histogram(var_taylor_2_errors_for_n_10,
+	plot_var_for_10 = draw_error_histogram(var_taylor_2_adjusted_errors_for_n_10,
 										  my_title=r"$$n=10$$",max_y=0.09)
 	
 	the_row=row(plot_mean_for_2, plot_mean_for_10)
 		
 	export_plot = column(
-		Div(text=r"<h1> &nbsp &nbsp &nbsp &nbsp &nbsp Relative approximation errors: Three-term Taylor expansion for  $${\bf E} \left [\sqrt{Q} \right ]$$</h1>", ),
+		Div(text=r"<h1> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp Second-order Taylor approximation of  $${\bf E} \left [\sqrt{Q} \right ]$$</h1>", ),
 			the_row)
 	
 	show(export_plot)
 			
-	export_png(export_plot, filename="error_histograms_three_term_expectation.png")
+	#export_png(export_plot, filename="error_histograms_three_term_expectation.png")
 	
 	
 	the_row=row(plot_var_for_2, plot_var_for_10)
 
 	export_plot = column(
-			Div(text=r"<h1> &nbsp &nbsp &nbsp &nbsp &nbsp Relative approximation errors: Two-term Taylor expansion for  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h1>", ),
+			Div(text=r"<h1> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  Implicit second-order Taylor approximation of  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h1>", ),
 				the_row)
 		
 	show(export_plot)
 		
-	export_png(export_plot, filename="error_histograms_two_term_var.png")
+	#export_png(export_plot, filename="error_histograms_two_term_var.png")
