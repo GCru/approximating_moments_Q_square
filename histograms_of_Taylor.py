@@ -253,7 +253,7 @@ if __name__ == '__main__':
 	
 	show(export_plot)
 			
-	#export_png(export_plot, filename="error_histograms_three_term_expectation.png")
+	export_png(export_plot, filename="error_histograms_three_term_expectation.png")
 	
 	
 	the_row=row(plot_var_for_2, plot_var_for_10)
@@ -264,4 +264,4 @@ if __name__ == '__main__':
 		
 	show(export_plot)
 		
-	#export_png(export_plot, filename="error_histograms_two_term_var.png")
+	export_png(export_plot, filename="error_histograms_two_term_var.png")

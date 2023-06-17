@@ -4,7 +4,7 @@ import csv
 from drs import drs
 
 
-def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eigenvalue=100000):
+def update_monte_carlo_file(n, fname, eigenvalue_sum, total_eigenvalue_draws, iterations_per_eigenvalue=100000):
 	""" Eigenvalues summing to 1 are drawn randomly using the DirichletRescaling.
 		For this eigenvaues set E[Q^0.5] and Var[Q^0.5] is caluulated
 		The eigenvalue set as well as these two values are then stored to a file.
@@ -39,7 +39,7 @@ def update_monte_carlo_file(n, fname, total_eigenvalue_draws, iterations_per_eig
 		total_remaining_eigenvalue_draws = total_eigenvalue_draws
 	
 	for count_eigenvalue_draws in range(total_remaining_eigenvalue_draws):
-		eigenvalues = drs(n, 1)
+		eigenvalues = drs(n, eigenvalue_sum)
 
 		I = numpy.zeros((n, n))
 		numpy.fill_diagonal(I, 1)
@@ -205,10 +205,10 @@ def calculate_extremes(eigenvalue_sum, n):
 
 if __name__ == '__main__':
 	
-	list_nr =1 # says which set of random eigenvalues
-	eigenvalue_sum = 1
+	list_nr =99 # says which set of random eigenvalues
+	eigenvalue_sum = 100
 	
-	n=500 # number of eigenvalues
+	n=2 # number of eigenvalues
 	
 	# So in this script m_Q = 1/n
 	
@@ -220,7 +220,7 @@ if __name__ == '__main__':
 	# fname='monte_carlo-'+str(n)+'.npy'
 	fname = Path('monte_carlo_'+str(list_nr)+'_list_'+str(n)+'_eigenvalues.npy')
 	
-	update_monte_carlo_file(n, fname, total_eigenvalue_draws=10000,iterations_per_eigenvalue=100000)
+	update_monte_carlo_file(n, fname, eigenvalue_sum, total_eigenvalue_draws=10000,iterations_per_eigenvalue=100000)
 	
 	max_mean_taylor_3_errors = 0
 	max_var_taylor_2_adjusted_errors = 0
@@ -282,13 +282,12 @@ if __name__ == '__main__':
 				print('Var Taylor 2 error: ', var_taylor_2_errors[-1], '%')
 				
 				var_sqrt_taylor_2_adjusted = calculate_taylor_2_adjusted_var_sqrt(eigenvalues)
-				
 				var_taylor_2_adjusted_errors.append(
 					100 * (var_sqrt_taylor_2_adjusted - var_lin_comb_chi_monte_carlo) / var_lin_comb_chi_monte_carlo)
 				print('Var Taylor adjusted 2 error: ', var_taylor_2_adjusted_errors[-1], '%')
-				if  True: #var_taylor_2_adjusted_errors[-1]<0:
+				if  var_taylor_2_adjusted_errors[-1]<0:
 					print('Var Taylor 2 adjusted: ', var_sqrt_taylor_2_adjusted, var_lin_comb_chi_monte_carlo)
-					#input()
+					input()
 				
 				var_sqrt_taylor_3 = calculate_taylor_3_var_sqrt(eigenvalues)
 				# print('Taylor 3 variance: ', var_sqrt_taylor_3)
