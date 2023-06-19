@@ -32,9 +32,9 @@ p_left.x_range=Range1d(0,5)
 p_left.y_range=Range1d(0,3)
 
 p_sqrt=p_left.line(x, y, color="black", alpha=1, line_width=3) # legend_label=r"$$\sqrt{x} $$")
-p_left.line(x, taylor_2, color="black", alpha=0.6, line_width=2, line_dash="dashed", legend_label="Two-term Taylor")
-p_left.line(x, taylor_3, color="black", alpha=0.6, line_width=2, line_dash="solid", legend_label="Three-term Taylor")
-p_left.line(x, taylor_4, color="black", alpha=0.6, line_width=2, line_dash='dotted',legend_label="Four-term Taylor")
+p_left.line(x, taylor_2, color="black", alpha=0.6, line_width=2, line_dash="dashed", legend_label="First-order Taylor")
+p_left.line(x, taylor_3, color="black", alpha=0.6, line_width=2, line_dash="solid", legend_label="Second-order Taylor")
+p_left.line(x, taylor_4, color="black", alpha=0.6, line_width=2, line_dash='dotted',legend_label="Third-order Taylor")
 
 label_left = Label(
 			text=r"$$ \sqrt{x}$$", x=4.4, y=2.25,text_font_size='22px' )
@@ -61,10 +61,10 @@ p_right.x_range=Range1d(0,6)
 p_right.y_range=Range1d(-5,25)
 
 p_right.line(x, y, color="black", alpha=1, line_width=3)
-p_right.line(x, taylor_3, color="black", alpha=0.6, line_width=2, line_dash="solid", legend_label="Three-term Taylor")
-p_right.line(x, taylor_4, color="black", alpha=0.6, line_width=2, line_dash='dotted', legend_label= "Four-term Taylor")
-p_right.line(x, taylor_5, color="black", alpha=0.6, line_width=2, line_dash='dotdash',legend_label= "Five-term Taylor")
-p_right.line(x, taylor_6, color="black", alpha=0.6, line_width=2, line_dash='dashed', legend_label= "Six-term Taylor")
+p_right.line(x, taylor_3, color="black", alpha=0.6, line_width=2, line_dash="solid", legend_label="Second-order Taylor")
+p_right.line(x, taylor_4, color="black", alpha=0.6, line_width=2, line_dash='dotted', legend_label= "Third-orderTaylor")
+p_right.line(x, taylor_5, color="black", alpha=0.6, line_width=2, line_dash='dotdash',legend_label= "Fourth-order Taylor")
+p_right.line(x, taylor_6, color="black", alpha=0.6, line_width=2, line_dash='dashed', legend_label= "Firth-order Taylor")
 
 label_right = Label(
 			text=r"$$ \sqrt{x}$$", x=5.4, y=3, text_font_size='22px')
