@@ -92,12 +92,13 @@ def calculate_taylor_3_mean_sqrt(eigenvalues):
 
 def calculate_taylor_2_var_sqrt(eigenvalues):
 
-	var_sqrt_wVw_taylor_2 = calculate_cumulant(2, eigenvalues) / (4 * calculate_cumulant(1, eigenvalues))
+	#var_sqrt_wVw_taylor_2 = calculate_cumulant(2, eigenvalues) / (4 * calculate_cumulant(1, eigenvalues))
 	
+	var_sqrt_wVw_taylor_2 = numpy.sum(numpy.square(eigenvalues))/(2*len(eigenvalues)*numpy.sum(eigenvalues))
 	
-	
-	# print(var_sqrt_wVw_taylor_2)
-	# input('aha')
+	#print(var_sqrt_wVw_taylor_2, test_value)
+	#print(numpy.sum(numpy.square(eigenvalues)))
+	#input('aha')
 	return var_sqrt_wVw_taylor_2
 
 
@@ -207,10 +208,10 @@ def calculate_extremes(eigenvalue_sum, n):
 
 if __name__ == '__main__':
 	
-	list_nr =3 # says which set of random eigenvalues
+	list_nr =4 # says which set of random eigenvalues
 	
 	n = 1000  # number of eigenvalues
-	eigenvalue_sum = n # try to limit rounding problems
+	eigenvalue_sum = n #n*n # try to limit rounding problems
 	
 	# So in this script m_Q = 1/n
 	
@@ -276,7 +277,6 @@ if __name__ == '__main__':
 					max_mean_taylor_3_errors = abs(mean_taylor_3_errors[-1])
 					max_mean_taylor_3_eigenvalues = eigenvalues
 				
-			
 				var_sqrt_taylor_2 = calculate_taylor_2_var_sqrt(eigenvalues)
 				# print('Var Taylor 2: ', var_sqrt_taylor_2)
 				var_taylor_2_errors.append(
