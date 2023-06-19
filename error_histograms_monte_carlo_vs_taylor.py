@@ -210,7 +210,7 @@ if __name__ == '__main__':
 	
 	list_nr =4 # says which set of random eigenvalues
 	
-	n = 1000  # number of eigenvalues
+	n = 100  # number of eigenvalues
 	eigenvalue_sum = n #n*n # try to limit rounding problems
 	
 	# So in this script m_Q = 1/n
@@ -223,7 +223,7 @@ if __name__ == '__main__':
 	# fname='monte_carlo-'+str(n)+'.npy'
 	fname = Path('monte_carlo_'+str(list_nr)+'_list_'+str(n)+'_eigenvalues.npy')
 	
-	update_monte_carlo_file(n, fname, eigenvalue_sum, total_eigenvalue_draws=100,iterations_per_eigenvalue=100000)
+	update_monte_carlo_file(n, fname, eigenvalue_sum, total_eigenvalue_draws=10000,iterations_per_eigenvalue=100000)
 	
 	max_mean_taylor_3_errors = 0
 	max_var_taylor_2_adjusted_errors = 0
