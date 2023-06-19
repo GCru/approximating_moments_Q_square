@@ -40,6 +40,7 @@ def update_monte_carlo_file(n, fname, eigenvalue_sum, total_eigenvalue_draws, it
 	
 	for count_eigenvalue_draws in range(total_remaining_eigenvalue_draws):
 		eigenvalues = drs(n, eigenvalue_sum)
+		print(eigenvalues)
 
 		I = numpy.zeros((n, n))
 		numpy.fill_diagonal(I, 1)
@@ -70,6 +71,8 @@ def update_monte_carlo_file(n, fname, eigenvalue_sum, total_eigenvalue_draws, it
 
 def calculate_cumulant(k, eigenvalue_list):
 	n = len(eigenvalue_list)
+
+	
 	kappa = (2 ** (k - 1)) * math.factorial(k - 1) / n ** k
 	
 	sum_product = 0
@@ -147,8 +150,7 @@ def calculate_extreme_mean_and_var(eigenvalue_sum, n):
 	
 	mu_Q = eigenvalue_sum / n
 	mean_extreme = ((2 * mu_Q / n) ** 0.5) * math.gamma((n + 1) / 2) / math.gamma(n / 2)
-	# print(mean_extreme, mean_extreme / mu_Q ** 0.5)
-	# exit()
+
 	var_extreme = (2 ** 0.5 * math.gamma((n + 1) / 2) / math.gamma(n / 2)) ** 2
 	
 	var_extreme = mu_Q * (1 - var_extreme / n)
@@ -205,10 +207,10 @@ def calculate_extremes(eigenvalue_sum, n):
 
 if __name__ == '__main__':
 	
-	list_nr =99 # says which set of random eigenvalues
-	eigenvalue_sum = 100
+	list_nr =3 # says which set of random eigenvalues
 	
-	n=2 # number of eigenvalues
+	n = 1000  # number of eigenvalues
+	eigenvalue_sum = n # try to limit rounding problems
 	
 	# So in this script m_Q = 1/n
 	
@@ -220,7 +222,7 @@ if __name__ == '__main__':
 	# fname='monte_carlo-'+str(n)+'.npy'
 	fname = Path('monte_carlo_'+str(list_nr)+'_list_'+str(n)+'_eigenvalues.npy')
 	
-	update_monte_carlo_file(n, fname, eigenvalue_sum, total_eigenvalue_draws=10000,iterations_per_eigenvalue=100000)
+	update_monte_carlo_file(n, fname, eigenvalue_sum, total_eigenvalue_draws=100,iterations_per_eigenvalue=100000)
 	
 	max_mean_taylor_3_errors = 0
 	max_var_taylor_2_adjusted_errors = 0
@@ -234,7 +236,7 @@ if __name__ == '__main__':
 	results_list = []
 	
 	# calculate what is the smallest E[Q**0.5] relative to mu_Q**0.5 = 1/n^**0.5
-	smallest_relative_mean_lin_comb_chi_monte_carlo = 1
+	smallest_relative_mean_lin_comb_chi_monte_carlo = eigenvalue_sum
 	smallest_relative_mean_eigenvalue_set =[]
 	
 	with open(fname, 'rb') as fp:
@@ -254,7 +256,7 @@ if __name__ == '__main__':
 					
 			
 				counter = counter + 1
-				print('Eingevalue set number', counter)
+				print('Eingevalue set number', counter, eigenvalues)
 				
 				print('Monte carlo mean', mean_lin_comb_chi_monte_carlo, 'expected mean', 0.1 ** 0.5 * (1 - 1 / 40))
 				print('Monte carlo var', var_lin_comb_chi_monte_carlo, 'expected var', 0.1 * (1 / 20))
@@ -287,7 +289,7 @@ if __name__ == '__main__':
 				print('Var Taylor adjusted 2 error: ', var_taylor_2_adjusted_errors[-1], '%')
 				if  var_taylor_2_adjusted_errors[-1]<0:
 					print('Var Taylor 2 adjusted: ', var_sqrt_taylor_2_adjusted, var_lin_comb_chi_monte_carlo)
-					input()
+
 				
 				var_sqrt_taylor_3 = calculate_taylor_3_var_sqrt(eigenvalues)
 				# print('Taylor 3 variance: ', var_sqrt_taylor_3)
