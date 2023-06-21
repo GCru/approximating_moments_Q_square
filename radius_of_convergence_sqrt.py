@@ -64,7 +64,7 @@ p_right.line(x, y, color="black", alpha=1, line_width=3)
 p_right.line(x, taylor_3, color="black", alpha=0.6, line_width=2, line_dash="solid", legend_label="Second-order Taylor")
 p_right.line(x, taylor_4, color="black", alpha=0.6, line_width=2, line_dash='dotted', legend_label= "Third-orderTaylor")
 p_right.line(x, taylor_5, color="black", alpha=0.6, line_width=2, line_dash='dotdash',legend_label= "Fourth-order Taylor")
-p_right.line(x, taylor_6, color="black", alpha=0.6, line_width=2, line_dash='dashed', legend_label= "Firth-order Taylor")
+p_right.line(x, taylor_6, color="black", alpha=0.6, line_width=2, line_dash='dashed', legend_label= "Fifth-order Taylor")
 
 label_right = Label(
 			text=r"$$ \sqrt{x}$$", x=5.4, y=3, text_font_size='22px')
