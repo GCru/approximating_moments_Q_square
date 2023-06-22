@@ -259,7 +259,7 @@ if __name__ == '__main__':
 	the_row=row(plot_var_for_2, plot_var_for_10)
 
 	export_plot = column(
-			Div(text=r"<h1> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  Implicit second-order Taylor approximation of  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h1>", ),
+			Div(text=r"<h1> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  Indirect second-order Taylor approximation of  $$\mathtt{Var} \left [\sqrt{Q} \right ]$$</h1>", ),
 				the_row)
 		
 	show(export_plot)

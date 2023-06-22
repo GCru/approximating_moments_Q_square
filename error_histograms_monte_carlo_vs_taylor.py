@@ -208,9 +208,9 @@ def calculate_extremes(eigenvalue_sum, n):
 
 if __name__ == '__main__':
 	
-	list_nr =4 # says which set of random eigenvalues
+	list_nr =5 # says which set of random eigenvalues
 	
-	n = 10  # number of eigenvalues
+	n = 12  # number of eigenvalues
 	eigenvalue_sum = n #n*n # try to limit rounding problems
 	
 	# So in this script m_Q = 1/n
